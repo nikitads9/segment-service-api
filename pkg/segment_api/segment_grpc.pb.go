@@ -4,7 +4,7 @@
 // - protoc             v3.19.6
 // source: segment.proto
 
-package segment_service_api
+package segment_v1
 
 import (
 	context "context"
@@ -25,8 +25,6 @@ const _ = grpc.SupportPackageIsVersion7
 type SegmentV1ServiceClient interface {
 	AddSegment(ctx context.Context, in *AddSegmentRequest, opts ...grpc.CallOption) (*AddSegmentResponse, error)
 	RemoveSegment(ctx context.Context, in *RemoveSegmentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	ModifySegments(ctx context.Context, in *ModifySegmentsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	GetSegments(ctx context.Context, in *GetSegmentsRequest, opts ...grpc.CallOption) (*GetSegmentsResponse, error)
 }
 
 type segmentV1ServiceClient struct {
@@ -55,32 +53,12 @@ func (c *segmentV1ServiceClient) RemoveSegment(ctx context.Context, in *RemoveSe
 	return out, nil
 }
 
-func (c *segmentV1ServiceClient) ModifySegments(ctx context.Context, in *ModifySegmentsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/segment.service.api.SegmentV1Service/ModifySegments", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *segmentV1ServiceClient) GetSegments(ctx context.Context, in *GetSegmentsRequest, opts ...grpc.CallOption) (*GetSegmentsResponse, error) {
-	out := new(GetSegmentsResponse)
-	err := c.cc.Invoke(ctx, "/segment.service.api.SegmentV1Service/GetSegments", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // SegmentV1ServiceServer is the server API for SegmentV1Service service.
 // All implementations must embed UnimplementedSegmentV1ServiceServer
 // for forward compatibility
 type SegmentV1ServiceServer interface {
 	AddSegment(context.Context, *AddSegmentRequest) (*AddSegmentResponse, error)
 	RemoveSegment(context.Context, *RemoveSegmentRequest) (*emptypb.Empty, error)
-	ModifySegments(context.Context, *ModifySegmentsRequest) (*emptypb.Empty, error)
-	GetSegments(context.Context, *GetSegmentsRequest) (*GetSegmentsResponse, error)
 	mustEmbedUnimplementedSegmentV1ServiceServer()
 }
 
@@ -93,12 +71,6 @@ func (UnimplementedSegmentV1ServiceServer) AddSegment(context.Context, *AddSegme
 }
 func (UnimplementedSegmentV1ServiceServer) RemoveSegment(context.Context, *RemoveSegmentRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveSegment not implemented")
-}
-func (UnimplementedSegmentV1ServiceServer) ModifySegments(context.Context, *ModifySegmentsRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ModifySegments not implemented")
-}
-func (UnimplementedSegmentV1ServiceServer) GetSegments(context.Context, *GetSegmentsRequest) (*GetSegmentsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetSegments not implemented")
 }
 func (UnimplementedSegmentV1ServiceServer) mustEmbedUnimplementedSegmentV1ServiceServer() {}
 
@@ -149,42 +121,6 @@ func _SegmentV1Service_RemoveSegment_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SegmentV1Service_ModifySegments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ModifySegmentsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SegmentV1ServiceServer).ModifySegments(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/segment.service.api.SegmentV1Service/ModifySegments",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SegmentV1ServiceServer).ModifySegments(ctx, req.(*ModifySegmentsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SegmentV1Service_GetSegments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetSegmentsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SegmentV1ServiceServer).GetSegments(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/segment.service.api.SegmentV1Service/GetSegments",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SegmentV1ServiceServer).GetSegments(ctx, req.(*GetSegmentsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // SegmentV1Service_ServiceDesc is the grpc.ServiceDesc for SegmentV1Service service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -199,14 +135,6 @@ var SegmentV1Service_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveSegment",
 			Handler:    _SegmentV1Service_RemoveSegment_Handler,
-		},
-		{
-			MethodName: "ModifySegments",
-			Handler:    _SegmentV1Service_ModifySegments_Handler,
-		},
-		{
-			MethodName: "GetSegments",
-			Handler:    _SegmentV1Service_GetSegments_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

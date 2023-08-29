@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package segment.service.api;
+
+option go_package = "github.com/nikitads9/segment-service-api/pkg/user_api;user_v1";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "validate/validate.proto";
+
+service UserV1Service {
+    rpc ModifySegments (ModifySegmentsRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            patch: "/user/modify"
+            body: "*"
+        };
+    }
+
+    rpc GetSegments (GetSegmentsRequest) returns (GetSegmentsResponse) {
+        option (google.api.http) = {
+            get: "/user/get-segments/{id}"
+        };
+    }
+}
+
+message ModifySegmentsRequest {
+    repeated string slug_to_add = 1 [json_name = "slugs-to-add"];
+    repeated string slug_to_remove = 2 [json_name = "slugs-to-remove"];
+    int64 id = 3 [json_name = "id", (validate.rules).int64 = {gt : 0}];
+}
+
+message GetSegmentsRequest {
+    int64 id = 1 [json_name = "id", (validate.rules).int64 = {gt : 0}];
+}
+
+message GetSegmentsResponse{
+    repeated string slugs =1;
+}

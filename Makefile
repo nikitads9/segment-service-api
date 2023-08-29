@@ -1,5 +1,6 @@
-.PHONY: generate
-generate:
+.PHONY: generate-segment-api
+generate-segment-api:
+	mkdir -p pkg/segment_api
 	protoc -I api/segment \
 	-I proto --go_out=pkg/segment_api \
 	--go_opt=paths=import --go-grpc_out=pkg/segment_api \
@@ -10,6 +11,21 @@ generate:
 	--swagger_out=allow_merge=true,merge_file_name=api:pkg/segment_api 
 	mv pkg/segment_api/github.com/nikitads9/segment-service-api/pkg/segment_api/* pkg/segment_api/
 	rm -r  ./pkg/segment_api/github.com
+
+.PHONY: generate-user-api
+generate-user-api:
+	mkdir -p pkg/user_api
+	protoc -I api/user \
+	-I proto --go_out=pkg/user_api \
+	--go_opt=paths=import --go-grpc_out=pkg/user_api \
+	--go-grpc_opt=paths=import --grpc-gateway_out=pkg/user_api \
+	--grpc-gateway_opt=logtostderr=true \
+	--grpc-gateway_opt=paths=import api/user/user.proto \
+	--validate_out lang=go:pkg/user_api \
+	--swagger_out=allow_merge=true,merge_file_name=api:pkg/user_api 
+	mv pkg/user_api/github.com/nikitads9/segment-service-api/pkg/user_api/* pkg/user_api/
+	rm -r  ./pkg/user_api/github.com
+
 
 PHONY: vendor-proto
 vendor-proto: .vendor-proto

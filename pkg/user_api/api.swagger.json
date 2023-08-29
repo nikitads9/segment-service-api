@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "segment.proto",
+    "title": "user.proto",
     "version": "version not set"
   },
   "consumes": [
@@ -11,46 +11,14 @@
     "application/json"
   ],
   "paths": {
-    "/segment/add": {
-      "post": {
-        "operationId": "SegmentV1Service_AddSegment",
+    "/user/get-segments/{id}": {
+      "get": {
+        "operationId": "UserV1Service_GetSegments",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apiAddSegmentResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/apiAddSegmentRequest"
-            }
-          }
-        ],
-        "tags": [
-          "SegmentV1Service"
-        ]
-      }
-    },
-    "/segment/remove/{id}": {
-      "delete": {
-        "operationId": "SegmentV1Service_RemoveSegment",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "properties": {}
+              "$ref": "#/definitions/apiGetSegmentsResponse"
             }
           },
           "default": {
@@ -70,23 +38,70 @@
           }
         ],
         "tags": [
-          "SegmentV1Service"
+          "UserV1Service"
+        ]
+      }
+    },
+    "/user/modify": {
+      "patch": {
+        "operationId": "UserV1Service_ModifySegments",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiModifySegmentsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserV1Service"
         ]
       }
     }
   },
   "definitions": {
-    "apiAddSegmentRequest": {
+    "apiGetSegmentsResponse": {
       "type": "object",
       "properties": {
-        "slug": {
-          "type": "string"
+        "slugs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
-    "apiAddSegmentResponse": {
+    "apiModifySegmentsRequest": {
       "type": "object",
       "properties": {
+        "slug_to_add": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "slug_to_remove": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "id": {
           "type": "string",
           "format": "int64"
