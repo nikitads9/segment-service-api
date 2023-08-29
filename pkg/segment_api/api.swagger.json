@@ -76,7 +76,7 @@
     },
     "/user/get-segments/{id}": {
       "get": {
-        "operationId": "UserV1Service_GetSegments",
+        "operationId": "SegmentV1Service_GetSegments",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -101,13 +101,13 @@
           }
         ],
         "tags": [
-          "UserV1Service"
+          "SegmentV1Service"
         ]
       }
     },
     "/user/modify": {
       "patch": {
-        "operationId": "UserV1Service_ModifySegments",
+        "operationId": "SegmentV1Service_ModifySegments",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -133,7 +133,7 @@
           }
         ],
         "tags": [
-          "UserV1Service"
+          "SegmentV1Service"
         ]
       }
     }

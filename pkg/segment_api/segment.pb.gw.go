@@ -121,7 +121,7 @@ func local_request_SegmentV1Service_RemoveSegment_0(ctx context.Context, marshal
 
 }
 
-func request_UserV1Service_ModifySegments_0(ctx context.Context, marshaler runtime.Marshaler, client UserV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_SegmentV1Service_ModifySegments_0(ctx context.Context, marshaler runtime.Marshaler, client SegmentV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ModifySegmentsRequest
 	var metadata runtime.ServerMetadata
 
@@ -138,7 +138,7 @@ func request_UserV1Service_ModifySegments_0(ctx context.Context, marshaler runti
 
 }
 
-func local_request_UserV1Service_ModifySegments_0(ctx context.Context, marshaler runtime.Marshaler, server UserV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_SegmentV1Service_ModifySegments_0(ctx context.Context, marshaler runtime.Marshaler, server SegmentV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ModifySegmentsRequest
 	var metadata runtime.ServerMetadata
 
@@ -155,7 +155,7 @@ func local_request_UserV1Service_ModifySegments_0(ctx context.Context, marshaler
 
 }
 
-func request_UserV1Service_GetSegments_0(ctx context.Context, marshaler runtime.Marshaler, client UserV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_SegmentV1Service_GetSegments_0(ctx context.Context, marshaler runtime.Marshaler, client SegmentV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetSegmentsRequest
 	var metadata runtime.ServerMetadata
 
@@ -182,7 +182,7 @@ func request_UserV1Service_GetSegments_0(ctx context.Context, marshaler runtime.
 
 }
 
-func local_request_UserV1Service_GetSegments_0(ctx context.Context, marshaler runtime.Marshaler, server UserV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_SegmentV1Service_GetSegments_0(ctx context.Context, marshaler runtime.Marshaler, server SegmentV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetSegmentsRequest
 	var metadata runtime.ServerMetadata
 
@@ -261,16 +261,7 @@ func RegisterSegmentV1ServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 
 	})
 
-	return nil
-}
-
-// RegisterUserV1ServiceHandlerServer registers the http handlers for service UserV1Service to "mux".
-// UnaryRPC     :call UserV1ServiceServer directly.
-// StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterUserV1ServiceHandlerFromEndpoint instead.
-func RegisterUserV1ServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server UserV1ServiceServer) error {
-
-	mux.Handle("PATCH", pattern_UserV1Service_ModifySegments_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_SegmentV1Service_ModifySegments_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -281,7 +272,7 @@ func RegisterUserV1ServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_UserV1Service_ModifySegments_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_SegmentV1Service_ModifySegments_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -289,11 +280,11 @@ func RegisterUserV1ServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 			return
 		}
 
-		forward_UserV1Service_ModifySegments_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_SegmentV1Service_ModifySegments_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_UserV1Service_GetSegments_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_SegmentV1Service_GetSegments_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -304,7 +295,7 @@ func RegisterUserV1ServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_UserV1Service_GetSegments_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_SegmentV1Service_GetSegments_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -312,7 +303,7 @@ func RegisterUserV1ServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 			return
 		}
 
-		forward_UserV1Service_GetSegments_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_SegmentV1Service_GetSegments_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -397,6 +388,46 @@ func RegisterSegmentV1ServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 
 	})
 
+	mux.Handle("PATCH", pattern_SegmentV1Service_ModifySegments_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_SegmentV1Service_ModifySegments_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_SegmentV1Service_ModifySegments_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_SegmentV1Service_GetSegments_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_SegmentV1Service_GetSegments_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_SegmentV1Service_GetSegments_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
@@ -404,103 +435,18 @@ var (
 	pattern_SegmentV1Service_AddSegment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"segment", "add"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_SegmentV1Service_RemoveSegment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"segment", "remove", "id"}, "", runtime.AssumeColonVerbOpt(true)))
+
+	pattern_SegmentV1Service_ModifySegments_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"user", "modify"}, "", runtime.AssumeColonVerbOpt(true)))
+
+	pattern_SegmentV1Service_GetSegments_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"user", "get-segments", "id"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
 	forward_SegmentV1Service_AddSegment_0 = runtime.ForwardResponseMessage
 
 	forward_SegmentV1Service_RemoveSegment_0 = runtime.ForwardResponseMessage
-)
 
-// RegisterUserV1ServiceHandlerFromEndpoint is same as RegisterUserV1ServiceHandler but
-// automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterUserV1ServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if err != nil {
-			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
-			}
-			return
-		}
-		go func() {
-			<-ctx.Done()
-			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
-			}
-		}()
-	}()
+	forward_SegmentV1Service_ModifySegments_0 = runtime.ForwardResponseMessage
 
-	return RegisterUserV1ServiceHandler(ctx, mux, conn)
-}
-
-// RegisterUserV1ServiceHandler registers the http handlers for service UserV1Service to "mux".
-// The handlers forward requests to the grpc endpoint over "conn".
-func RegisterUserV1ServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterUserV1ServiceHandlerClient(ctx, mux, NewUserV1ServiceClient(conn))
-}
-
-// RegisterUserV1ServiceHandlerClient registers the http handlers for service UserV1Service
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "UserV1ServiceClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "UserV1ServiceClient"
-// doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "UserV1ServiceClient" to call the correct interceptors.
-func RegisterUserV1ServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client UserV1ServiceClient) error {
-
-	mux.Handle("PATCH", pattern_UserV1Service_ModifySegments_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_UserV1Service_ModifySegments_0(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_UserV1Service_ModifySegments_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("GET", pattern_UserV1Service_GetSegments_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_UserV1Service_GetSegments_0(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_UserV1Service_GetSegments_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	return nil
-}
-
-var (
-	pattern_UserV1Service_ModifySegments_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"user", "modify"}, "", runtime.AssumeColonVerbOpt(true)))
-
-	pattern_UserV1Service_GetSegments_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"user", "get-segments", "id"}, "", runtime.AssumeColonVerbOpt(true)))
-)
-
-var (
-	forward_UserV1Service_ModifySegments_0 = runtime.ForwardResponseMessage
-
-	forward_UserV1Service_GetSegments_0 = runtime.ForwardResponseMessage
+	forward_SegmentV1Service_GetSegments_0 = runtime.ForwardResponseMessage
 )

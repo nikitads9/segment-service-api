@@ -23,9 +23,7 @@ service SegmentV1Service {
             delete: "/segment/remove/{id}"
         };
     }
-}
 
-service UserV1Service {
     rpc ModifySegments (ModifySegmentsRequest) returns (google.protobuf.Empty) {
         option (google.api.http) = {
             patch: "/user/modify"
