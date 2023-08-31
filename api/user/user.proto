@@ -6,6 +6,7 @@ option go_package = "github.com/nikitads9/segment-service-api/pkg/user_api;user_
 
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 import "validate/validate.proto";
 
 service UserV1Service {
@@ -21,12 +22,41 @@ service UserV1Service {
             get: "/user/get-segments/{id}"
         };
     }
+
+    rpc AddUser (AddUserRequest) returns (AddUserResponse) {
+        option (google.api.http) = {
+            post: "/user/add-user"
+            body: "*"
+        };
+    }
+
+    rpc RemoveUser (RemoveUsertRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            delete: "/user/remove-user/{id}"
+        };
+    }
 }
 
 message ModifySegmentsRequest {
-    repeated string slug_to_add = 1 [json_name = "slugs-to-add"];
-    repeated string slug_to_remove = 2 [json_name = "slugs-to-remove"];
-    int64 id = 3 [json_name = "id", (validate.rules).int64 = {gt : 0}];
+    int64 id = 1 [json_name = "id", (validate.rules).int64 = {gt : 0}];
+    repeated string slug_to_add = 2 [json_name = "slugs-to-add", (validate.rules).repeated = {
+        unique : true
+        items: {
+            string: {
+                min_len: 1
+                max_len: 100
+            }
+        }}];
+    repeated google.protobuf.Timestamp expiration_time = 3 [json_name = "expiration-time"];
+    repeated string slug_to_remove = 4 [json_name = "slugs-to-remove", (validate.rules).repeated = {
+        unique : true
+        items: {
+            string: {
+                min_len: 1
+                max_len: 100
+            }
+        }
+    }];
 }
 
 message GetSegmentsRequest {
@@ -35,4 +65,16 @@ message GetSegmentsRequest {
 
 message GetSegmentsResponse{
     repeated string slugs =1;
+}
+
+message AddUserRequest {
+    string user_name = 1 [json_name = "user_name", (validate.rules).string = {min_len: 1, max_len: 30}];
+}
+
+message AddUserResponse {
+    int64 id = 1;
+}
+
+message RemoveUsertRequest {
+    int64 id = 1 [json_name = "id", (validate.rules).int64 = {gt : 0}];
 }

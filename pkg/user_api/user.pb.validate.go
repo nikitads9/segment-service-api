@@ -68,6 +68,102 @@ func (m *ModifySegmentsRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
+	_ModifySegmentsRequest_SlugToAdd_Unique := make(map[string]struct{}, len(m.GetSlugToAdd()))
+
+	for idx, item := range m.GetSlugToAdd() {
+		_, _ = idx, item
+
+		if _, exists := _ModifySegmentsRequest_SlugToAdd_Unique[item]; exists {
+			err := ModifySegmentsRequestValidationError{
+				field:  fmt.Sprintf("SlugToAdd[%v]", idx),
+				reason: "repeated value must contain unique items",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		} else {
+			_ModifySegmentsRequest_SlugToAdd_Unique[item] = struct{}{}
+		}
+
+		if l := utf8.RuneCountInString(item); l < 1 || l > 100 {
+			err := ModifySegmentsRequestValidationError{
+				field:  fmt.Sprintf("SlugToAdd[%v]", idx),
+				reason: "value length must be between 1 and 100 runes, inclusive",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+
+	}
+
+	for idx, item := range m.GetExpirationTime() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, ModifySegmentsRequestValidationError{
+						field:  fmt.Sprintf("ExpirationTime[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, ModifySegmentsRequestValidationError{
+						field:  fmt.Sprintf("ExpirationTime[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return ModifySegmentsRequestValidationError{
+					field:  fmt.Sprintf("ExpirationTime[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	_ModifySegmentsRequest_SlugToRemove_Unique := make(map[string]struct{}, len(m.GetSlugToRemove()))
+
+	for idx, item := range m.GetSlugToRemove() {
+		_, _ = idx, item
+
+		if _, exists := _ModifySegmentsRequest_SlugToRemove_Unique[item]; exists {
+			err := ModifySegmentsRequestValidationError{
+				field:  fmt.Sprintf("SlugToRemove[%v]", idx),
+				reason: "repeated value must contain unique items",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		} else {
+			_ModifySegmentsRequest_SlugToRemove_Unique[item] = struct{}{}
+		}
+
+		if l := utf8.RuneCountInString(item); l < 1 || l > 100 {
+			err := ModifySegmentsRequestValidationError{
+				field:  fmt.Sprintf("SlugToRemove[%v]", idx),
+				reason: "value length must be between 1 and 100 runes, inclusive",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+
+	}
+
 	if len(errors) > 0 {
 		return ModifySegmentsRequestMultiError(errors)
 	}
@@ -362,3 +458,329 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = GetSegmentsResponseValidationError{}
+
+// Validate checks the field values on AddUserRequest with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *AddUserRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on AddUserRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in AddUserRequestMultiError,
+// or nil if none found.
+func (m *AddUserRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *AddUserRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if l := utf8.RuneCountInString(m.GetUserName()); l < 1 || l > 30 {
+		err := AddUserRequestValidationError{
+			field:  "UserName",
+			reason: "value length must be between 1 and 30 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return AddUserRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// AddUserRequestMultiError is an error wrapping multiple validation errors
+// returned by AddUserRequest.ValidateAll() if the designated constraints
+// aren't met.
+type AddUserRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m AddUserRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m AddUserRequestMultiError) AllErrors() []error { return m }
+
+// AddUserRequestValidationError is the validation error returned by
+// AddUserRequest.Validate if the designated constraints aren't met.
+type AddUserRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e AddUserRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e AddUserRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e AddUserRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e AddUserRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e AddUserRequestValidationError) ErrorName() string { return "AddUserRequestValidationError" }
+
+// Error satisfies the builtin error interface
+func (e AddUserRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sAddUserRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = AddUserRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = AddUserRequestValidationError{}
+
+// Validate checks the field values on AddUserResponse with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *AddUserResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on AddUserResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// AddUserResponseMultiError, or nil if none found.
+func (m *AddUserResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *AddUserResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	if len(errors) > 0 {
+		return AddUserResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// AddUserResponseMultiError is an error wrapping multiple validation errors
+// returned by AddUserResponse.ValidateAll() if the designated constraints
+// aren't met.
+type AddUserResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m AddUserResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m AddUserResponseMultiError) AllErrors() []error { return m }
+
+// AddUserResponseValidationError is the validation error returned by
+// AddUserResponse.Validate if the designated constraints aren't met.
+type AddUserResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e AddUserResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e AddUserResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e AddUserResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e AddUserResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e AddUserResponseValidationError) ErrorName() string { return "AddUserResponseValidationError" }
+
+// Error satisfies the builtin error interface
+func (e AddUserResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sAddUserResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = AddUserResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = AddUserResponseValidationError{}
+
+// Validate checks the field values on RemoveUsertRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *RemoveUsertRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on RemoveUsertRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// RemoveUsertRequestMultiError, or nil if none found.
+func (m *RemoveUsertRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *RemoveUsertRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if m.GetId() <= 0 {
+		err := RemoveUsertRequestValidationError{
+			field:  "Id",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return RemoveUsertRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// RemoveUsertRequestMultiError is an error wrapping multiple validation errors
+// returned by RemoveUsertRequest.ValidateAll() if the designated constraints
+// aren't met.
+type RemoveUsertRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m RemoveUsertRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m RemoveUsertRequestMultiError) AllErrors() []error { return m }
+
+// RemoveUsertRequestValidationError is the validation error returned by
+// RemoveUsertRequest.Validate if the designated constraints aren't met.
+type RemoveUsertRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e RemoveUsertRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e RemoveUsertRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e RemoveUsertRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e RemoveUsertRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e RemoveUsertRequestValidationError) ErrorName() string {
+	return "RemoveUsertRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e RemoveUsertRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sRemoveUsertRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = RemoveUsertRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = RemoveUsertRequestValidationError{}

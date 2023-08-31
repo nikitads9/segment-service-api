@@ -1,33 +1,38 @@
-/*DROP   TABLE  IF EXISTS schemas.clients;
-DROP   TABLE  IF EXISTS schemas.segments;
-DROP   TABLE  IF EXISTS schemas.clients_segments_junction;
-DROP   SCHEMA IF EXISTS schemas;
-CREATE SCHEMA schemas;*/
-create table clients
+DROP   TABLE  IF EXISTS users;
+DROP   TABLE  IF EXISTS segments;
+DROP   TABLE  IF EXISTS users_segments_junction;
+
+create table users
 (
     id bigserial primary key,
     username text not null
+    unique (username)
 );
 
 create table segments
 (
     id bigserial primary key,
-    title text not null
+    slug text not null,
+    unique(slug)
 );
 
-create table clients_segments_junction
+create table users_segments_junction
 (
-    client_id int not null,
+    user_id int not null,
     segment_id int not null,
-    constraint fk_client
-        foreign key(client_id)
-            references clients(id)
+    added_at timestamp,
+    time_of_expire timestamp,
+    state bool,
+    constraint fk_users
+        foreign key(user_id)
+            references users(id)
             on delete cascade
   			on update cascade,
     constraint fk_segments
         foreign key(segment_id)
             references segments(id)
             on delete cascade
-  			on update cascade
+  			on update cascade,
+    unique(user_id, segment_id)
 );
 

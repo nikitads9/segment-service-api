@@ -1,0 +1,13 @@
+grpc:
+  port: ":50051"
+
+http:
+  port: ":8000"
+
+database:
+  host: "localhost"
+  port: "5432"
+  user: "postgres"
+  database: "segments_db"
+  ssl: "disable"
+  max_opened_connections: 10

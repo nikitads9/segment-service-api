@@ -18,6 +18,20 @@ type DB struct {
 	pool *pgxpool.Pool
 }
 
+type Transactor interface {
+	BeginTx(ctx context.Context, txOptions pgx.TxOptions) (pgx.Tx, error)
+}
+
+type TxManager interface {
+	ReadCommitted(ctx context.Context, f Handler) error
+}
+
+type Handler func(ctx context.Context) error
+
+func (db *DB) BeginTx(ctx context.Context, txOptions pgx.TxOptions) (pgx.Tx, error) {
+	return db.pool.BeginTx(ctx, txOptions)
+}
+
 func (db *DB) GetContext(ctx context.Context, dest interface{}, q Query, args ...interface{}) error {
 	return pgxscan.Get(ctx, db.pool, dest, q.QueryRaw, args...)
 }

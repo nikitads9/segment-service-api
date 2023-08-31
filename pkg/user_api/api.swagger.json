@@ -11,6 +11,38 @@
     "application/json"
   ],
   "paths": {
+    "/user/add-user": {
+      "post": {
+        "operationId": "UserV1Service_AddUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiAddUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiAddUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserV1Service"
+        ]
+      }
+    },
     "/user/get-segments/{id}": {
       "get": {
         "operationId": "UserV1Service_GetSegments",
@@ -73,9 +105,57 @@
           "UserV1Service"
         ]
       }
+    },
+    "/user/remove-user/{id}": {
+      "delete": {
+        "operationId": "UserV1Service_RemoveUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "UserV1Service"
+        ]
+      }
     }
   },
   "definitions": {
+    "apiAddUserRequest": {
+      "type": "object",
+      "properties": {
+        "user_name": {
+          "type": "string"
+        }
+      }
+    },
+    "apiAddUserResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
     "apiGetSegmentsResponse": {
       "type": "object",
       "properties": {
@@ -90,10 +170,21 @@
     "apiModifySegmentsRequest": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
         "slug_to_add": {
           "type": "array",
           "items": {
             "type": "string"
+          }
+        },
+        "expiration_time": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "slug_to_remove": {
@@ -101,10 +192,6 @@
           "items": {
             "type": "string"
           }
-        },
-        "id": {
-          "type": "string",
-          "format": "int64"
         }
       }
     },

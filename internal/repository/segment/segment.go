@@ -3,7 +3,9 @@ package segment
 import (
 	"context"
 
-	"github.com/nikitads9/segment-service-api/internal/pkg/db"
+	sq "github.com/Masterminds/squirrel"
+	"github.com/nikitads9/segment-service-api/internal/client/db"
+	"github.com/nikitads9/segment-service-api/internal/repository/table"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -25,9 +27,61 @@ func NewSegmentRepository(client db.Client) Repository {
 }
 
 func (r *repository) AddSegment(ctx context.Context, slug string) (int64, error) {
-	return 0, nil
+	builder := sq.Insert(table.SegmentTable).
+		PlaceholderFormat(sq.Dollar).
+		Columns("slug").
+		Values(slug).
+		Suffix("returning id")
+
+	query, args, err := builder.ToSql()
+	if err != nil {
+		return 0, err
+	}
+
+	q := db.Query{
+		Name:     "segment_repository.AddSegment",
+		QueryRaw: query,
+	}
+
+	row, err := r.client.DB().QueryContext(ctx, q, args...)
+	if err != nil {
+		return 0, err
+	}
+	defer row.Close()
+
+	var id int64
+	row.Next()
+	err = row.Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }
 
 func (r *repository) RemoveSegment(ctx context.Context, id int64) error {
+	builder := sq.Delete(table.SegmentTable).
+		PlaceholderFormat(sq.Dollar).
+		Where(sq.Eq{"id": id})
+
+	query, args, err := builder.ToSql()
+	if err != nil {
+		return err
+	}
+
+	q := db.Query{
+		Name:     "segment_repository.RemoveSegment",
+		QueryRaw: query,
+	}
+
+	result, err := r.client.DB().ExecContext(ctx, q, args...)
+	if err != nil {
+		return err
+	}
+
+	if result.RowsAffected() == 0 {
+		return errNotFound
+	}
+
 	return nil
 }
