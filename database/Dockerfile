@@ -1,10 +1,8 @@
-FROM alpine:latest
+FROM postgres:14-alpine3.15
+RUN mkdir ./db
+COPY . db/
+RUN chown -R root ./db
 
-WORKDIR /database
-
-ADD *.sql database/
-ADD createDB.sh .
+WORKDIR /db
 
 RUN chmod +x createDB.sh
-
-ENTRYPOINT ["bash", "createDB.sh"]

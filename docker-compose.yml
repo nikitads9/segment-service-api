@@ -5,7 +5,7 @@ volumes:
 
 services:
   postgres:
-    build: .database/
+    build: ./database/
     image: postgres:14-alpine3.15
     container_name: 'avito_postgres'
     environment:
@@ -17,3 +17,4 @@ services:
       - postgres-volume:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    command: bash createDB.sh

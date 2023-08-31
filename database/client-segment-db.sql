@@ -1,12 +1,10 @@
-DROP   TABLE  IF EXISTS users;
-DROP   TABLE  IF EXISTS segments;
-DROP   TABLE  IF EXISTS users_segments_junction;
+
 
 create table users
 (
     id bigserial primary key,
-    username text not null
-    unique (username)
+    username text not null,
+    unique(username)
 );
 
 create table segments
