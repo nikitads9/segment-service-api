@@ -19,7 +19,7 @@
 - Makefile
 - Protocol Buffer Compiler ([protoc](https://github.com/protocolbuffers/protobuf/releases))
 - [Docker](https://www.docker.com/)
-- ([Golang](https://go.dev/dl/))
+- [Golang](https://go.dev/dl/)
 	
 Параметры соединения с базой данных находятся в файле **config.yml**, а также в **docker-compose**. При изменении конфигурационного файла, необходимо также внести изменения в файл **docker-compose**. При локальном запуске сервиса имя хоста базы данных localhost, в случае контейнеризованного запуска -- postgres. Для запуска сервиса нужно ввести следующие команды:
 ```
