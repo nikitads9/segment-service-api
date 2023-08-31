@@ -11,17 +11,17 @@ import (
 
 	grpcValidator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/nikitads9/segment-service-api/internal/app/api/segment_v1"
-	pb "github.com/nikitads9/segment-service-api/pkg/segment_api"
+	descSegmentV1 "github.com/nikitads9/segment-service-api/pkg/segment_api"
+	descUserV1 "github.com/nikitads9/segment-service-api/pkg/user_api"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 type App struct {
-	segmentImpl     *segment_v1.Implementation
 	serviceProvider *serviceProvider
 	pathConfig      string
 	grpcServer      *grpc.Server
+	httpServer      *http.Server
 	mux             *runtime.ServeMux
 }
 
@@ -59,9 +59,8 @@ func (a *App) Run(ctx context.Context) error {
 func (a *App) initDeps(ctx context.Context) error {
 	inits := []func(context.Context) error{
 		a.initServiceProvider,
-		a.initServer,
 		a.initGRPCServer,
-		a.initPublicHTTPHandlers,
+		a.initHTTPServer,
 	}
 
 	for _, f := range inits {
@@ -80,25 +79,24 @@ func (a *App) initServiceProvider(_ context.Context) error {
 	return nil
 }
 
-func (a *App) initServer(ctx context.Context) error {
-	segmentService := a.serviceProvider.GetSegmentService(ctx)
-	a.segmentImpl = segment_v1.NewSegmentV1(segmentService)
-
-	return nil
-}
-
-func (a *App) initGRPCServer(_ context.Context) error {
+func (a *App) initGRPCServer(ctx context.Context) error {
 	a.grpcServer = grpc.NewServer(grpc.UnaryInterceptor(grpcValidator.UnaryServerInterceptor()))
 
-	pb.RegisterSegmentV1ServiceServer(a.grpcServer, a.segmentImpl)
+	descSegmentV1.RegisterSegmentV1ServiceServer(a.grpcServer, a.serviceProvider.GetSegmentImpl(ctx))
+	descUserV1.RegisterUserV1ServiceServer(a.grpcServer, a.serviceProvider.GetUserImpl(ctx))
 
 	return nil
 }
 
-func (a *App) initPublicHTTPHandlers(ctx context.Context) error {
+func (a *App) initHTTPServer(ctx context.Context) error {
 	a.mux = runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	err := pb.RegisterSegmentV1ServiceHandlerFromEndpoint(ctx, a.mux, a.serviceProvider.GetConfig().Grpc.Port, opts)
+	err := descSegmentV1.RegisterSegmentV1ServiceHandlerFromEndpoint(ctx, a.mux, a.serviceProvider.GetConfig().Grpc.Port, opts)
+	if err != nil {
+		return err
+	}
+
+	err = descUserV1.RegisterUserV1ServiceHandlerFromEndpoint(ctx, a.mux, a.serviceProvider.GetConfig().Grpc.Port, opts)
 	if err != nil {
 		return err
 	}
