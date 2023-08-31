@@ -94,7 +94,7 @@ bash migration-local.sh
 
 ## API use instruction
 
-This service is an API that implements the CRUD concept. It features the ability to create, read, update and delete database entries. The instruction below is for simple HTTP+JSON requests with RESTful API style. If you rather want to write a gRPC client, you would need to look up in the **note_v1.proto** file.
+Этот сервис частично реализует концепцию CRUD. С его помощью возможно создавать и удалять сегменты и пользователей, а также назначать сегменты пользователям и прекращать участие пользователей в сегментах. При прекращении связи пользователя и сегмента запись об участии пользователя в сегменте сохраняется с флагом **state** `false` и пометкой о времени удаления из сегмента **time_of_expire**. При удалении сегмента, записи о входящих в него пользователях полностью удаляются. Инструкция, размещенная ниже, предназначена для запросов HTTP+JSON в RESTful API стиле. Для тестирования gRPC клиента см. контракты в файлах **segment.proto** и **user.proto**.
 <details>
 <summary> 
 1. метод AddUser 
@@ -104,7 +104,7 @@ This service is an API that implements the CRUD concept. It features the ability
 Объект JSON, передаваемый этому методу должен выглядеть так:
 ```
 {
-  "user_name": "string"
+  "user_name": "user1"
 }
 ```
 Метод возвращает объект JSON с вложенным id добавленного пользователя
@@ -139,7 +139,7 @@ This service is an API that implements the CRUD concept. It features the ability
 Объект JSON, передаваемый этому методу должен выглядеть так:
 ```
 {
-  "id": "string",
+  "id": "1",
   "slug_to_add": [
     "segment1"
   ],
@@ -167,8 +167,8 @@ This service is an API that implements the CRUD concept. It features the ability
 Объект JSON, передаваемый этому методу должен выглядеть так:
 ```
 {
-  "id": "string",
-  "slug": "string",
+  "id": "1",
+  "slug": "segment1",
   "expiration_time": "2023-08-31T09:47:57.917Z"
 }
 ```
@@ -183,7 +183,7 @@ This service is an API that implements the CRUD concept. It features the ability
 Объект JSON, передаваемый этому методу должен выглядеть так:
 ```
 {
-  "slug": "string"
+  "slug": "segment1"
 }
 ```
 Метод возвращает id добавленного сегмента. 
