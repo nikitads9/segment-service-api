@@ -1,2 +1,197 @@
-# segment-service-api
-Сервис для динамического обновления сегментов пользователей.
+# segment-service-api 
+
+## Brief description
+
+<p align="justify">
+	
+This is a service dedicated to keep brief memos with a structure "Title, Content". The title is constrained to be shorter than 20 letters, 
+whereas the content is bounded to 1000 letters. The service' API accepts gRPC or HTTP requests and converts the received Protobuffer 
+request into a simple golang struct, isolated from the outer layer. That struct is then passed to specific method of a service layer
+according to the initial request. The service layer in turn redirects the received model to specific method in repository layer, which has an 
+interface for communication with PostgreSQL database. This service requires at least [Docker](https://www.docker.com/) and [Goose](https://github.com/pressly/goose/) installed as well as using Linux or
+WSL to set up the Note Service app and database in a container.
+</p>
+
+## Project setup
+
+### Out of the box scenario
+
+<p align="justify">
+	
+In case you want to just use this service out of the box, you need to verify the installation of goose and docker. If you don't have goose installed,
+```
+curl -fsSL \
+    https://raw.githubusercontent.com/pressly/goose/master/install.sh |\
+    GOOSE_INSTALL=/usr/local/bin/.goose sh -s v3.5.0
+sudo cp -r /home/$USER/.goose/bin/goose /usr/local/bin
+```
+Then you need to pull Docker images from my repository on DockerHub.
+```
+docker pull nikitads9/note-service:app
+docker pull postgres:14-alpine3.15
+```
+When it is done, it's time to run containers using pulled images. If you want to specify your own database connection parameters, you should change the environment `-e` and port `-p` flags in the command featured below:
+```
+docker network create note-service-network
+docker run -d -e POSTGRES_DB='notes_db' \
+ -e POSTGRES_PASSWORD='notes_pass'\
+ -e POSTGRES_USER='postgres'\
+ -e PGDATA='/var/lib/postgresql/data/notification'\
+ -p 5432:5432\
+ -v postgres-volume:'/var/lib/postgresql/data'\
+ --network note-service-network \
+ --name postgres\
+ postgres:14-alpine3.15
+docker run -d --name app\
+ -p 50051:50051\
+ -p 8000:8000\
+ -v 'app-volume:/var/lib/note-app/data'\
+ --network note-service-network\
+ nikitads9/note-service:app
+```
+**NB**: If you have changed the database configuration in `docker run` command, you should also edit the connection variables in **migration-local.sh** script file. 
+And finally, when both containers are up, run this bash script for migration:
+```
+bash migration-local.sh
+```
+Now the database table is created and you can send HTTP and gRPC requests to the server app.
+</p>
+
+### Advanced installation
+
+<p align="justify">
+	
+In case you want to build the service yourself, you will need to have these tools installed:
+- Makefile
+- Goose
+- Protocol Buffer Compiler ([protoc](https://github.com/protocolbuffers/protobuf/releases))
+- Docker
+- Golang
+	
+If you are ok with that, be sure to edit database connection parameters in **config.yml** file among with **Dockerfile** and **migration-local.sh**. The commands to launch the server app and database are listed below:
+```
+git clone https://github.com/nikitads9/note-service-api.git
+cd note-service-api/
+make deps
+make vendor-proto
+make generate
+docker-compose up -d
+curl -fsSL \
+    https://raw.githubusercontent.com/pressly/goose/master/install.sh |\
+    GOOSE_INSTALL=$HOME/.goose sh -s v3.5.0
+sudo cp -r /home/$USER/.goose/bin/goose /usr/local/bin
+bash migration-local.sh
+```
+- The `make deps` command installs dependencies required for this project.
+- The `make vendor-proto` command downloads the required tools for protobuf and validate to work. Running this command will create proto folder in the root of the project with all necessary `.proto` files.
+- The `make generate` command creates three files: `grpc.pb.go`, `pb.go`, `pb.gw.go` based on API description in **note_v1.proto**. These files contain golang structs, interfaces and golang methods generated on the basis of Protobuffer interface description.
+- The `docker-compose up -d` command downloads **alpine3.15** image from Docker Hub (if you don't have it locally), builds a binary and creates two containers: one for server app which is the the API service itself and the second one acts as database server. Both containers are connected to default Docker network which enables the two containers to communicate successfully. 
+- The `curl -fsSL...` command downloads goose tool for database migration and initiates the installation process. Another way of installing goose is to run ```go install github.com/pressly/goose/v3/cmd/goose@latest``` outside of this repository (goose binary will turn up at the **%GOPATH%/bin** folder).
+- The `sudo cp -r /home/$USER/.goose/bin/goose /usr/local/bin` command copies goose binary file to `usr/local/bin` folder so that your Linux could run goose commands from anywhere.
+- The `bash migration-local.sh` command starts the bash script, that completes database migration specified in `.sql` file in **/migrations** folder. The parameters required for database connection to complete migration are specified in **migration-local.sh**.
+
+</justify>
+
+## API use instruction
+
+This service is an API that implements the CRUD concept. It features the ability to create, read, update and delete database entries. The instruction below is for simple HTTP+JSON requests with RESTful API style. If you rather want to write a gRPC client, you would need to look up in the **note_v1.proto** file.
+<details>
+<summary> 
+1. метод AddUser 
+</summary>
+  
+**POST** `host:port/user/add-user` <br />
+Объект JSON, передаваемый этому методу должен выглядеть так:
+```
+{
+  "user_name": "string"
+}
+```
+Метод возвращает объект JSON с вложенным id добавленного пользователя
+```
+{
+	"id": "1"
+}
+```
+</details>
+<details>
+<summary> 
+2. метод GetSegments
+</summary>
+  
+**GET** `host:port/user/get-segments/{id}` <br />
+Этот метод не нуждается в JSON. Вместо этого требуется id сегмента.
+У запроса нет тела
+Метод возвращает объект JSON с  массивом названий сегментов
+</details>
+<details>
+<summary> 
+3. метод ModifySegments
+</summary>
+  
+**PATCH** `host:port/user/modify` <br />
+Объект JSON, передаваемый этому методу должен выглядеть так:
+```
+{
+  "id": "string",
+  "slug_to_add": [
+    "string"
+  ],
+  "slug_to_remove": [
+    "string"
+  ]
+}
+```
+Возвращаемое значение должно выглядеть как пустой объект JSON.
+</details>
+<details>
+<summary> 
+4. метод RemoveUser 
+</summary>
+  
+**DELETE** `host:port/user/remove-user/{id}` <br />
+У запроса нет тела
+Возвращаемое значение должно выглядеть как пустой объект JSON.
+</details>
+<details>
+<summary> 
+5. метод SetExpireTime
+</summary>
+  
+**POST** `host:port/user/set-expire-time` <br />
+Объект JSON, передаваемый этому методу должен выглядеть так:
+```
+{
+  "id": "string",
+  "slug": "string",
+  "expiration_time": "2023-08-31T09:47:57.917Z"
+}
+```
+Возвращаемое значение должно выглядеть как пустой объект JSON.
+</details>
+<details>
+<summary> 
+6. метод AddSegment
+</summary>
+  
+**POST** `host:port/segment/add-segment` <br />
+Объект JSON, передаваемый этому методу должен выглядеть так:
+```
+{
+  "slug": "string"
+}
+```
+Метод возвращает id добавленного сегмента. 
+</details>
+<details>
+<summary> 
+7. метод RemoveSegment
+</summary>
+  
+**DELETE** `host:port/segment/remove-segment/{id}` <br />
+
+```
+У запроса нет тела
+```
+Возвращаемое значение должно выглядеть как пустой объект JSON.
+</details>

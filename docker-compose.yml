@@ -17,3 +17,15 @@ services:
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
+
+  app:
+    build: .
+    image: nikitads9/segment-service:app
+    container_name: 'app'
+    ports:
+      - "50051:50051"
+      - "8000:8000"
+    depends_on:
+      - postgres
+    links:
+      - postgres

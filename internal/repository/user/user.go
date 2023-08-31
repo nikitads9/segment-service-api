@@ -12,6 +12,7 @@ import (
 )
 
 var errNotFound = status.Error(codes.NotFound, "there is no segment with this name")
+var errFailed = status.Error(codes.InvalidArgument, "the operation failed")
 
 type Repository interface {
 	AddToSegment(ctx context.Context, slug string, userId int64) error
@@ -88,7 +89,7 @@ func (r *repository) AddToSegment(ctx context.Context, slug string, userId int64
 
 	q := db.Query{
 		Name:     "user_repository.AddToSegment",
-		QueryRaw: query + " on conflict (user_id, segment_id) do nothing",
+		QueryRaw: query + " on conflict (user_id, segment_id, state) do nothing",
 	}
 
 	_, err = r.client.DB().ExecContext(ctx, q, args...)
@@ -222,7 +223,7 @@ func (r *repository) GetUser(ctx context.Context, id int64) (string, error) {
 	row.Next()
 	err = row.Scan(&userName)
 	if err != nil {
-		return "", err
+		return "", errFailed
 	}
 
 	return userName, nil
@@ -230,6 +231,7 @@ func (r *repository) GetUser(ctx context.Context, id int64) (string, error) {
 
 func (r *repository) AddUser(ctx context.Context, userName string) (int64, error) {
 	builder := sq.Insert(table.UserTable).
+		Columns("username").
 		Values(userName).
 		Suffix("returning id").
 		PlaceholderFormat(sq.Dollar)
@@ -253,7 +255,8 @@ func (r *repository) AddUser(ctx context.Context, userName string) (int64, error
 	row.Next()
 	err = row.Scan(&id)
 	if err != nil {
-		return 0, err
+		return 0, errFailed
+
 	}
 
 	return id, nil

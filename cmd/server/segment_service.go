@@ -10,8 +10,9 @@ import (
 
 var pathConfig string
 
+// "C:\\Users\\swnik\\Desktop\\projects\\segment-service-api\\
 func init() {
-	pathConfig = *flag.String("config path", "C:\\Users\\swnik\\Desktop\\projects\\segment-service-api\\config.yml", "path to config file")
+	pathConfig = *flag.String("config path", "config.yml", "path to config file")
 }
 
 func main() {

@@ -12,7 +12,7 @@ import "validate/validate.proto";
 service UserV1Service {
     rpc ModifySegments (ModifySegmentsRequest) returns (google.protobuf.Empty) {
         option (google.api.http) = {
-            patch: "/user/modify"
+            patch: "/user/modify-segments"
             body: "*"
         };
     }

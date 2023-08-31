@@ -509,7 +509,7 @@ func RegisterUserV1ServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 }
 
 var (
-	pattern_UserV1Service_ModifySegments_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"user", "modify"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_UserV1Service_ModifySegments_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"user", "modify-segments"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_UserV1Service_GetSegments_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"user", "get-segments", "id"}, "", runtime.AssumeColonVerbOpt(true)))
 

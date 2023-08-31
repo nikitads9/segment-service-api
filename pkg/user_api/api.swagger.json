@@ -74,7 +74,7 @@
         ]
       }
     },
-    "/user/modify": {
+    "/user/modify-segments": {
       "patch": {
         "operationId": "UserV1Service_ModifySegments",
         "responses": {

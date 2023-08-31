@@ -11,6 +11,7 @@ import (
 )
 
 var errNotFound = status.Error(codes.NotFound, "there is no segment with this id")
+var errFailed = status.Error(codes.InvalidArgument, "the operation failed")
 
 type Repository interface {
 	AddSegment(ctx context.Context, slug string) (int64, error)
@@ -31,7 +32,7 @@ func (r *repository) AddSegment(ctx context.Context, slug string) (int64, error)
 		PlaceholderFormat(sq.Dollar).
 		Columns("slug").
 		Values(slug).
-		Suffix("returning id")
+		Suffix("ON CONFLICT (slug) DO NOTHING returning id")
 
 	query, args, err := builder.ToSql()
 	if err != nil {
@@ -53,7 +54,7 @@ func (r *repository) AddSegment(ctx context.Context, slug string) (int64, error)
 	row.Next()
 	err = row.Scan(&id)
 	if err != nil {
-		return 0, err
+		return 0, errFailed
 	}
 
 	return id, nil
