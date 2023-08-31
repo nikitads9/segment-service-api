@@ -15,6 +15,7 @@ create table segments
 
 create table users_segments_junction
 (
+    junction_id uuid primary key,
     user_id int not null,
     segment_id int not null,
     added_at timestamp,
@@ -30,6 +31,6 @@ create table users_segments_junction
             references segments(id)
             on delete cascade
   			on update cascade,
-    unique(user_id, segment_id, state, time_of_expire)
+            unique(user_id, segment_id, state)
 );
 

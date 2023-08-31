@@ -1,17 +1,23 @@
 package user
 
 import (
+	"bytes"
 	"context"
+	"encoding/csv"
+	"errors"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/nikitads9/segment-service-api/internal/client/db"
+	"github.com/nikitads9/segment-service-api/internal/model"
 	"github.com/nikitads9/segment-service-api/internal/repository/table"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-var errNotFound = status.Error(codes.NotFound, "there is no segment with this name")
+var errNotFound = status.Error(codes.NotFound, "there is no instance with this name or id")
 var errFailed = status.Error(codes.InvalidArgument, "the operation failed")
 
 type Repository interface {
@@ -22,7 +28,9 @@ type Repository interface {
 	AddUser(ctx context.Context, userName string) (int64, error)
 	GetUser(ctx context.Context, userId int64) (string, error)
 	RemoveUser(ctx context.Context, userId int64) error
+	GetUserHistoryCsv(ctx context.Context, userId int64) (bytes.Buffer, error)
 }
+
 type repository struct {
 	client db.Client
 }
@@ -78,9 +86,10 @@ func (r *repository) AddToSegment(ctx context.Context, slug string, userId int64
 	}
 
 	builder := sq.Insert(table.JunctionTable).
-		Columns("user_id", "segment_id", "state", "added_at").
-		Values(userId, segmentId, true, time.Now().UTC()).
-		PlaceholderFormat(sq.Dollar)
+		Columns("junction_id", "user_id", "segment_id", "state", "added_at").
+		Values(uuid.New(), userId, segmentId, true, time.Now().UTC()).
+		PlaceholderFormat(sq.Dollar).
+		Suffix("ON CONFLICT (user_id, segment_id, state) DO NOTHING")
 
 	query, args, err := builder.ToSql()
 	if err != nil {
@@ -89,7 +98,7 @@ func (r *repository) AddToSegment(ctx context.Context, slug string, userId int64
 
 	q := db.Query{
 		Name:     "user_repository.AddToSegment",
-		QueryRaw: query + " on conflict (user_id, segment_id, state) do nothing",
+		QueryRaw: query,
 	}
 
 	_, err = r.client.DB().ExecContext(ctx, q, args...)
@@ -129,6 +138,10 @@ func (r *repository) RemoveFromSegment(ctx context.Context, slug string, userId 
 
 	_, err = r.client.DB().ExecContext(ctx, q, args...)
 	if err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) {
+			return status.Error(codes.InvalidArgument, pgErr.Message)
+		}
 		return err
 	}
 
@@ -277,11 +290,52 @@ func (r *repository) RemoveUser(ctx context.Context, userId int64) error {
 		QueryRaw: query,
 	}
 
-	_, err = r.client.DB().ExecContext(ctx, q, args...)
+	result, err := r.client.DB().ExecContext(ctx, q, args...)
 	if err != nil {
 		return err
 	}
 
+	if result.RowsAffected() == 0 {
+		return errNotFound
+	}
+
 	return nil
 
+}
+
+func (r *repository) GetUserHistoryCsv(ctx context.Context, userId int64) (bytes.Buffer, error) {
+	var buffer bytes.Buffer
+
+	builder := sq.Select("slug", "added_at", "time_of_expire").
+		From(table.JunctionTable).Join(table.SegmentTable + " ON segment_id=id").
+		Where(sq.Eq{"user_id": userId}).
+		PlaceholderFormat(sq.Dollar)
+
+	query, args, err := builder.ToSql()
+	if err != nil {
+		return buffer, err
+	}
+
+	q := db.Query{
+		Name:     "user_repository.GetUserHistoryCsv",
+		QueryRaw: query,
+	}
+
+	var dest []model.HistoryLine
+	err = r.client.DB().SelectContext(ctx, &dest, q, args...)
+	if err != nil {
+		return buffer, err
+	}
+
+	writer := csv.NewWriter(&buffer)
+	for _, elem := range dest {
+		writer.Write(elem.ToStringArray())
+	}
+
+	writer.Flush()
+	if err := writer.Error(); err != nil {
+		return buffer, err
+	}
+
+	return buffer, nil
 }

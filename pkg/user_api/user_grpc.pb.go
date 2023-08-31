@@ -28,6 +28,7 @@ type UserV1ServiceClient interface {
 	SetExpireTime(ctx context.Context, in *SetExpireTimeRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserResponse, error)
 	RemoveUser(ctx context.Context, in *RemoveUsertRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetUserHistoryCsv(ctx context.Context, in *GetUserHistoryCsvRequest, opts ...grpc.CallOption) (*GetUserHistoryCsvResponse, error)
 }
 
 type userV1ServiceClient struct {
@@ -83,6 +84,15 @@ func (c *userV1ServiceClient) RemoveUser(ctx context.Context, in *RemoveUsertReq
 	return out, nil
 }
 
+func (c *userV1ServiceClient) GetUserHistoryCsv(ctx context.Context, in *GetUserHistoryCsvRequest, opts ...grpc.CallOption) (*GetUserHistoryCsvResponse, error) {
+	out := new(GetUserHistoryCsvResponse)
+	err := c.cc.Invoke(ctx, "/segment.service.api.UserV1Service/GetUserHistoryCsv", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserV1ServiceServer is the server API for UserV1Service service.
 // All implementations must embed UnimplementedUserV1ServiceServer
 // for forward compatibility
@@ -92,6 +102,7 @@ type UserV1ServiceServer interface {
 	SetExpireTime(context.Context, *SetExpireTimeRequest) (*emptypb.Empty, error)
 	AddUser(context.Context, *AddUserRequest) (*AddUserResponse, error)
 	RemoveUser(context.Context, *RemoveUsertRequest) (*emptypb.Empty, error)
+	GetUserHistoryCsv(context.Context, *GetUserHistoryCsvRequest) (*GetUserHistoryCsvResponse, error)
 	mustEmbedUnimplementedUserV1ServiceServer()
 }
 
@@ -113,6 +124,9 @@ func (UnimplementedUserV1ServiceServer) AddUser(context.Context, *AddUserRequest
 }
 func (UnimplementedUserV1ServiceServer) RemoveUser(context.Context, *RemoveUsertRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveUser not implemented")
+}
+func (UnimplementedUserV1ServiceServer) GetUserHistoryCsv(context.Context, *GetUserHistoryCsvRequest) (*GetUserHistoryCsvResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserHistoryCsv not implemented")
 }
 func (UnimplementedUserV1ServiceServer) mustEmbedUnimplementedUserV1ServiceServer() {}
 
@@ -217,6 +231,24 @@ func _UserV1Service_RemoveUser_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserV1Service_GetUserHistoryCsv_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserHistoryCsvRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserV1ServiceServer).GetUserHistoryCsv(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/segment.service.api.UserV1Service/GetUserHistoryCsv",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserV1ServiceServer).GetUserHistoryCsv(ctx, req.(*GetUserHistoryCsvRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserV1Service_ServiceDesc is the grpc.ServiceDesc for UserV1Service service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -243,6 +275,10 @@ var UserV1Service_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveUser",
 			Handler:    _UserV1Service_RemoveUser_Handler,
+		},
+		{
+			MethodName: "GetUserHistoryCsv",
+			Handler:    _UserV1Service_GetUserHistoryCsv_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

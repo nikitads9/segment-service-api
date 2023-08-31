@@ -42,6 +42,12 @@ service UserV1Service {
             delete: "/user/remove-user/{id}"
         };
     }
+    
+    rpc GetUserHistoryCsv (GetUserHistoryCsvRequest) returns (GetUserHistoryCsvResponse) {
+        option (google.api.http) = {
+            get: "/user/download-history/{id}"
+        };
+    }
 }
 
 message ModifySegmentsRequest {
@@ -63,6 +69,7 @@ message ModifySegmentsRequest {
             }
         }
     }];
+
 }
 
 message GetSegmentsRequest {
@@ -80,7 +87,7 @@ message SetExpireTimeRequest {
 }
 
 message AddUserRequest {
-    string user_name = 1 [json_name = "user_name", (validate.rules).string = {min_len: 1, max_len: 30}];
+    string user_name = 1 [json_name = "user_name", (validate.rules).string = {min_len: 1, max_len: 100}];
 }
 
 message AddUserResponse {
@@ -89,4 +96,12 @@ message AddUserResponse {
 
 message RemoveUsertRequest {
     int64 id = 1 [json_name = "id", (validate.rules).int64 = {gt : 0}];
+}
+
+message GetUserHistoryCsvRequest {
+    int64 id = 1 [json_name = "id", (validate.rules).int64 = {gt : 0}];
+}
+
+message GetUserHistoryCsvResponse {
+    bytes chunk = 1;
 }

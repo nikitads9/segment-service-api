@@ -43,6 +43,37 @@
         ]
       }
     },
+    "/user/download-history/{id}": {
+      "get": {
+        "operationId": "UserV1Service_GetUserHistoryCsv",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiGetUserHistoryCsvResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "UserV1Service"
+        ]
+      }
+    },
     "/user/get-segments/{id}": {
       "get": {
         "operationId": "UserV1Service_GetSegments",
@@ -196,6 +227,15 @@
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "apiGetUserHistoryCsvResponse": {
+      "type": "object",
+      "properties": {
+        "chunk": {
+          "type": "string",
+          "format": "byte"
         }
       }
     },

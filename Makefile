@@ -1,3 +1,6 @@
+generate:
+	make generate-segment-api && make generate-user-api
+
 .PHONY: generate-segment-api
 generate-segment-api:
 	mkdir -p pkg/segment_api

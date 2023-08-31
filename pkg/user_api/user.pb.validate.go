@@ -582,10 +582,10 @@ func (m *AddUserRequest) validate(all bool) error {
 
 	var errors []error
 
-	if l := utf8.RuneCountInString(m.GetUserName()); l < 1 || l > 30 {
+	if l := utf8.RuneCountInString(m.GetUserName()); l < 1 || l > 100 {
 		err := AddUserRequestValidationError{
 			field:  "UserName",
-			reason: "value length must be between 1 and 30 runes, inclusive",
+			reason: "value length must be between 1 and 100 runes, inclusive",
 		}
 		if !all {
 			return err
@@ -885,3 +885,220 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = RemoveUsertRequestValidationError{}
+
+// Validate checks the field values on GetUserHistoryCsvRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetUserHistoryCsvRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetUserHistoryCsvRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetUserHistoryCsvRequestMultiError, or nil if none found.
+func (m *GetUserHistoryCsvRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetUserHistoryCsvRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if m.GetId() <= 0 {
+		err := GetUserHistoryCsvRequestValidationError{
+			field:  "Id",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return GetUserHistoryCsvRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetUserHistoryCsvRequestMultiError is an error wrapping multiple validation
+// errors returned by GetUserHistoryCsvRequest.ValidateAll() if the designated
+// constraints aren't met.
+type GetUserHistoryCsvRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetUserHistoryCsvRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetUserHistoryCsvRequestMultiError) AllErrors() []error { return m }
+
+// GetUserHistoryCsvRequestValidationError is the validation error returned by
+// GetUserHistoryCsvRequest.Validate if the designated constraints aren't met.
+type GetUserHistoryCsvRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetUserHistoryCsvRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetUserHistoryCsvRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetUserHistoryCsvRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetUserHistoryCsvRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetUserHistoryCsvRequestValidationError) ErrorName() string {
+	return "GetUserHistoryCsvRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetUserHistoryCsvRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetUserHistoryCsvRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetUserHistoryCsvRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetUserHistoryCsvRequestValidationError{}
+
+// Validate checks the field values on GetUserHistoryCsvResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetUserHistoryCsvResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetUserHistoryCsvResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetUserHistoryCsvResponseMultiError, or nil if none found.
+func (m *GetUserHistoryCsvResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetUserHistoryCsvResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Chunk
+
+	if len(errors) > 0 {
+		return GetUserHistoryCsvResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetUserHistoryCsvResponseMultiError is an error wrapping multiple validation
+// errors returned by GetUserHistoryCsvResponse.ValidateAll() if the
+// designated constraints aren't met.
+type GetUserHistoryCsvResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetUserHistoryCsvResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetUserHistoryCsvResponseMultiError) AllErrors() []error { return m }
+
+// GetUserHistoryCsvResponseValidationError is the validation error returned by
+// GetUserHistoryCsvResponse.Validate if the designated constraints aren't met.
+type GetUserHistoryCsvResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetUserHistoryCsvResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetUserHistoryCsvResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetUserHistoryCsvResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetUserHistoryCsvResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetUserHistoryCsvResponseValidationError) ErrorName() string {
+	return "GetUserHistoryCsvResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetUserHistoryCsvResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetUserHistoryCsvResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetUserHistoryCsvResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetUserHistoryCsvResponseValidationError{}

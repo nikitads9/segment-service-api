@@ -6,9 +6,10 @@ require (
 	github.com/envoyproxy/protoc-gen-validate v1.0.2
 	github.com/georgysavva/scany/v2 v2.0.0
 	github.com/golang/protobuf v1.5.3
+	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/jackc/pgx/v5 v5.4.3
+	github.com/jackc/pgx/v5 v5.4.3	
 	github.com/pkg/errors v0.9.1
 	google.golang.org/genproto/googleapis/api v0.0.0-20230822172742-b8732ec3820d
 	google.golang.org/grpc v1.57.0
@@ -19,6 +20,7 @@ require (
 require (
 	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect
 	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
+	github.com/stretchr/objx v0.5.0 // indirect
 )
 
 require (
