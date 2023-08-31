@@ -1,5 +1,4 @@
 
-
 create table users
 (
     id bigserial primary key,

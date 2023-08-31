@@ -5,7 +5,6 @@ volumes:
 
 services:
   postgres:
-    build: ./database/
     image: postgres:14-alpine3.15
     container_name: 'avito_postgres'
     environment:
@@ -15,6 +14,6 @@ services:
       - "PGDATA=/var/lib/postgresql/data/notification"
     volumes: 
       - postgres-volume:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
-    command: bash createDB.sh

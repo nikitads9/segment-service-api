@@ -11,14 +11,14 @@ import "validate/validate.proto";
 service SegmentV1Service {
     rpc AddSegment (AddSegmentRequest) returns (AddSegmentResponse) {
         option (google.api.http) = {
-            post: "/segment/add"
+            post: "/segment/add-segment"
             body: "*"
         };
     }
     
     rpc RemoveSegment (RemoveSegmentRequest) returns (google.protobuf.Empty) {
         option (google.api.http) = {
-            delete: "/segment/remove/{id}"
+            delete: "/segment/remove-segment/{id}"
         };
     }
 }
