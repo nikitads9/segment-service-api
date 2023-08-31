@@ -5,6 +5,7 @@ volumes:
 
 services:
   postgres:
+    build: .database/
     image: postgres:14-alpine3.15
     container_name: 'avito_postgres'
     environment:

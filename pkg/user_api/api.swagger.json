@@ -136,6 +136,38 @@
           "UserV1Service"
         ]
       }
+    },
+    "/user/set-expire-time": {
+      "post": {
+        "operationId": "UserV1Service_SetExpireTime",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiSetExpireTimeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserV1Service"
+        ]
+      }
     }
   },
   "definitions": {
@@ -180,18 +212,27 @@
             "type": "string"
           }
         },
-        "expiration_time": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
         "slug_to_remove": {
           "type": "array",
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "apiSetExpireTimeRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "expiration_time": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     },

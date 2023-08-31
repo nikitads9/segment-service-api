@@ -7,8 +7,8 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (i *Implementation) RemoveUser(ctx context.Context, req *desc.RemoveUsertRequest) (*emptypb.Empty, error) {
-	err := i.userService.RemoveUser(ctx, req.GetId())
+func (i *Implementation) SetExpireTime(ctx context.Context, req *desc.SetExpireTimeRequest) (*emptypb.Empty, error) {
+	err := i.userService.SetExpireTime(ctx, req.GetId(), req.GetSlug(), req.GetExpirationTime().AsTime())
 	if err != nil {
 		return nil, err
 	}

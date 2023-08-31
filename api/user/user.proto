@@ -23,6 +23,13 @@ service UserV1Service {
         };
     }
 
+    rpc SetExpireTime (SetExpireTimeRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/user/set-expire-time"
+            body: "*"
+        };
+    }
+
     rpc AddUser (AddUserRequest) returns (AddUserResponse) {
         option (google.api.http) = {
             post: "/user/add-user"
@@ -47,8 +54,7 @@ message ModifySegmentsRequest {
                 max_len: 100
             }
         }}];
-    repeated google.protobuf.Timestamp expiration_time = 3 [json_name = "expiration-time"];
-    repeated string slug_to_remove = 4 [json_name = "slugs-to-remove", (validate.rules).repeated = {
+    repeated string slug_to_remove = 3 [json_name = "slugs-to-remove", (validate.rules).repeated = {
         unique : true
         items: {
             string: {
@@ -65,6 +71,12 @@ message GetSegmentsRequest {
 
 message GetSegmentsResponse{
     repeated string slugs =1;
+}
+
+message SetExpireTimeRequest {
+    int64 id = 1;
+    string slug = 2;
+    google.protobuf.Timestamp expiration_time = 3 [json_name = "expiration-time"];
 }
 
 message AddUserRequest {

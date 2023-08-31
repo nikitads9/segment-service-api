@@ -25,6 +25,7 @@ const _ = grpc.SupportPackageIsVersion7
 type UserV1ServiceClient interface {
 	ModifySegments(ctx context.Context, in *ModifySegmentsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetSegments(ctx context.Context, in *GetSegmentsRequest, opts ...grpc.CallOption) (*GetSegmentsResponse, error)
+	SetExpireTime(ctx context.Context, in *SetExpireTimeRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserResponse, error)
 	RemoveUser(ctx context.Context, in *RemoveUsertRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
@@ -55,6 +56,15 @@ func (c *userV1ServiceClient) GetSegments(ctx context.Context, in *GetSegmentsRe
 	return out, nil
 }
 
+func (c *userV1ServiceClient) SetExpireTime(ctx context.Context, in *SetExpireTimeRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/segment.service.api.UserV1Service/SetExpireTime", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userV1ServiceClient) AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserResponse, error) {
 	out := new(AddUserResponse)
 	err := c.cc.Invoke(ctx, "/segment.service.api.UserV1Service/AddUser", in, out, opts...)
@@ -79,6 +89,7 @@ func (c *userV1ServiceClient) RemoveUser(ctx context.Context, in *RemoveUsertReq
 type UserV1ServiceServer interface {
 	ModifySegments(context.Context, *ModifySegmentsRequest) (*emptypb.Empty, error)
 	GetSegments(context.Context, *GetSegmentsRequest) (*GetSegmentsResponse, error)
+	SetExpireTime(context.Context, *SetExpireTimeRequest) (*emptypb.Empty, error)
 	AddUser(context.Context, *AddUserRequest) (*AddUserResponse, error)
 	RemoveUser(context.Context, *RemoveUsertRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedUserV1ServiceServer()
@@ -93,6 +104,9 @@ func (UnimplementedUserV1ServiceServer) ModifySegments(context.Context, *ModifyS
 }
 func (UnimplementedUserV1ServiceServer) GetSegments(context.Context, *GetSegmentsRequest) (*GetSegmentsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSegments not implemented")
+}
+func (UnimplementedUserV1ServiceServer) SetExpireTime(context.Context, *SetExpireTimeRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetExpireTime not implemented")
 }
 func (UnimplementedUserV1ServiceServer) AddUser(context.Context, *AddUserRequest) (*AddUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddUser not implemented")
@@ -149,6 +163,24 @@ func _UserV1Service_GetSegments_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserV1Service_SetExpireTime_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetExpireTimeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserV1ServiceServer).SetExpireTime(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/segment.service.api.UserV1Service/SetExpireTime",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserV1ServiceServer).SetExpireTime(ctx, req.(*SetExpireTimeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserV1Service_AddUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddUserRequest)
 	if err := dec(in); err != nil {
@@ -199,6 +231,10 @@ var UserV1Service_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetSegments",
 			Handler:    _UserV1Service_GetSegments_Handler,
+		},
+		{
+			MethodName: "SetExpireTime",
+			Handler:    _UserV1Service_SetExpireTime_Handler,
 		},
 		{
 			MethodName: "AddUser",
