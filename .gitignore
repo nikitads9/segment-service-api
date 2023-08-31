@@ -13,6 +13,7 @@
 
 #Directories
 proto/
+.vscode/
 
 # Go workspace file
 go.work
