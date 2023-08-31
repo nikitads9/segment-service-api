@@ -120,25 +120,31 @@ This service is an API that implements the CRUD concept. It features the ability
 </summary>
   
 **GET** `host:port/user/get-segments/{id}` <br />
-Этот метод не нуждается в JSON. Вместо этого требуется id сегмента.
-У запроса нет тела
-Метод возвращает объект JSON с  массивом названий сегментов
+Этот метод не нуждается в JSON объекте. Вместо этого требуется id сегмента.
+Метод возвращает JSON с  массивом названий сегментов:
+```
+{
+	"slugs": [
+		"segment1"
+	]
+}
+```
 </details>
 <details>
 <summary> 
 3. метод ModifySegments
 </summary>
   
-**PATCH** `host:port/user/modify` <br />
+**PATCH** `host:port/user/modify-segments` <br />
 Объект JSON, передаваемый этому методу должен выглядеть так:
 ```
 {
   "id": "string",
   "slug_to_add": [
-    "string"
+    "segment1"
   ],
   "slug_to_remove": [
-    "string"
+    "segment2"
   ]
 }
 ```
@@ -150,8 +156,7 @@ This service is an API that implements the CRUD concept. It features the ability
 </summary>
   
 **DELETE** `host:port/user/remove-user/{id}` <br />
-У запроса нет тела
-Возвращаемое значение должно выглядеть как пустой объект JSON.
+У запроса нет тела. Возвращаемое значение должно выглядеть как пустой объект JSON.
 </details>
 <details>
 <summary> 
@@ -182,6 +187,11 @@ This service is an API that implements the CRUD concept. It features the ability
 }
 ```
 Метод возвращает id добавленного сегмента. 
+```
+{
+	"id": "1"
+}
+```
 </details>
 <details>
 <summary> 
@@ -189,9 +199,5 @@ This service is an API that implements the CRUD concept. It features the ability
 </summary>
   
 **DELETE** `host:port/segment/remove-segment/{id}` <br />
-
-```
-У запроса нет тела
-```
-Возвращаемое значение должно выглядеть как пустой объект JSON.
+У запроса нет тела. Возвращаемое значение должно выглядеть как пустой объект JSON.
 </details>
