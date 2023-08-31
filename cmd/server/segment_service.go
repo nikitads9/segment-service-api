@@ -12,7 +12,7 @@ var pathConfig string
 
 // "C:\\Users\\swnik\\Desktop\\projects\\segment-service-api\\
 func init() {
-	pathConfig = *flag.String("config path", "config.yml", "path to config file")
+	flag.StringVar(&pathConfig, "config", "config.yml", "path to config file")
 }
 
 func main() {

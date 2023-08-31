@@ -30,6 +30,6 @@ create table users_segments_junction
             references segments(id)
             on delete cascade
   			on update cascade,
-    unique(user_id, segment_id, state)
+    unique(user_id, segment_id, state, time_of_expire)
 );
 

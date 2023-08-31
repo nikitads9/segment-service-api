@@ -11,7 +11,7 @@
     "application/json"
   ],
   "paths": {
-    "/segment/add": {
+    "/segment/add-segment": {
       "post": {
         "operationId": "SegmentV1Service_AddSegment",
         "responses": {
@@ -43,7 +43,7 @@
         ]
       }
     },
-    "/segment/remove/{id}": {
+    "/segment/remove-segment/{id}": {
       "delete": {
         "operationId": "SegmentV1Service_RemoveSegment",
         "responses": {

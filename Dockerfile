@@ -1,4 +1,4 @@
-FROM golang:1.21.0-alpine AS builder
+FROM golang:1.21-alpine AS builder
 
 COPY . /github.com/nikitads9/segment-service-api/
 
@@ -15,4 +15,4 @@ WORKDIR /root/
 COPY --from=builder /github.com/nikitads9/segment-service-api/bin .
 COPY --from=builder /github.com/nikitads9/segment-service-api/config.yml .
 
-#CMD ["./segment_service", "--config", "config.yml"]
+CMD ["./segment_service", "-config", "config.yml"]

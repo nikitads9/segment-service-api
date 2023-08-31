@@ -57,10 +57,10 @@ func (m *AddSegmentRequest) validate(all bool) error {
 
 	var errors []error
 
-	if l := utf8.RuneCountInString(m.GetSlug()); l < 1 || l > 20 {
+	if l := utf8.RuneCountInString(m.GetSlug()); l < 1 || l > 30 {
 		err := AddSegmentRequestValidationError{
 			field:  "Slug",
-			reason: "value length must be between 1 and 20 runes, inclusive",
+			reason: "value length must be between 1 and 30 runes, inclusive",
 		}
 		if !all {
 			return err

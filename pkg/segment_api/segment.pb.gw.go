@@ -258,9 +258,9 @@ func RegisterSegmentV1ServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 }
 
 var (
-	pattern_SegmentV1Service_AddSegment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"segment", "add"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_SegmentV1Service_AddSegment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"segment", "add-segment"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_SegmentV1Service_RemoveSegment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"segment", "remove", "id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_SegmentV1Service_RemoveSegment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"segment", "remove-segment", "id"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
