@@ -4,11 +4,7 @@
 
 <p align="justify">
 	
-This is a service dedicated to keep brief memos with a structure "Title, Content". The title is constrained to be shorter than 20 letters, 
-whereas the content is bounded to 1000 letters. The service' API accepts gRPC or HTTP requests and converts the received Protobuffer 
-request into a simple golang struct, isolated from the outer layer. That struct is then passed to specific method of a service layer
-according to the initial request. The service layer in turn redirects the received model to specific method in repository layer, which has an 
-interface for communication with PostgreSQL database. This service requires at least [Docker](https://www.docker.com/) and [Goose](https://github.com/pressly/goose/) installed as well as using Linux or
+Это сервис для динамического назначения пользователей сегментам. Все текстовые значения, передаваемые сервису не должны превышать длину строки 100 (пустые строки запрещены). Массивы значений должны содержать не повторяющиеся значения. Для выполнения этих условий организована валидация. Сервис принимает запросы как с помощью gRPC, так и с помощью HTTP, в нём частично реализлована идея model-view-control, однако слой-адаптер был исключен ввиду простоты выполняемых операций. Так как в задании, выданном авито операция модификации сегментов, привязанных к пользователю обозначена не атомарной (одновременно и добавление и удаление сегментов), была применена оболочка, позволяющая превращать операции в транзакции (в методе ModifySegments service-слоя). <br /> Дополнительное задание 1 было реализовано с помощью хранения времени добавления записи о связи пользователя и сегмента в таблицу-связку (многие-ко-многим). При этом при отвязке сегмента от пользователя сменяется флаг и запись превращается в архивную (id клиента, id сегмента, время создания связи, время ее удаления, статус). При удалении пользователя или сегмента, связанные с ним записи в таблице-связке каскадно удаляются. <br /> Дополнительное задание 2 было реализовано с помощью поля, отвечающего за время удаления (в случае операции удаления в это поле записывается текущее время, а в случае назначения Time-To-Live, используется отдельный метод, который назначает время отвязки сегмента от пользователя. Процесс исполнения этой отвязки вне рамок задания. <br /> This service requires at least [Docker](https://www.docker.com/) and [Goose](https://github.com/pressly/goose/) installed as well as using Linux or
 WSL to set up the Note Service app and database in a container.
 </p>
 
