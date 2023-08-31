@@ -243,7 +243,7 @@ func local_request_UserV1Service_RemoveUser_0(ctx context.Context, marshaler run
 
 }
 
-func request_UserV1Service_GetUserHistoryCsv_0(ctx context.Context, marshaler runtime.Marshaler, client UserV1ServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UserV1Service_GetUserHistoryCsv_0(ctx context.Context, marshaler runtime.Marshaler, client UserV1ServiceClient, req *http.Request, pathParams map[string]string) (UserV1Service_GetUserHistoryCsvClient, runtime.ServerMetadata, error) {
 	var protoReq GetUserHistoryCsvRequest
 	var metadata runtime.ServerMetadata
 
@@ -265,35 +265,16 @@ func request_UserV1Service_GetUserHistoryCsv_0(ctx context.Context, marshaler ru
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	msg, err := client.GetUserHistoryCsv(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_UserV1Service_GetUserHistoryCsv_0(ctx context.Context, marshaler runtime.Marshaler, server UserV1ServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetUserHistoryCsvRequest
-	var metadata runtime.ServerMetadata
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["id"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
-	}
-
-	protoReq.Id, err = runtime.Int64(val)
-
+	stream, err := client.GetUserHistoryCsv(ctx, &protoReq)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, err
 	}
-
-	msg, err := server.GetUserHistoryCsv(ctx, &protoReq)
-	return msg, metadata, err
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
 
 }
 
@@ -419,26 +400,10 @@ func RegisterUserV1ServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 	})
 
 	mux.Handle("GET", pattern_UserV1Service_GetUserHistoryCsv_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_UserV1Service_GetUserHistoryCsv_0(rctx, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_UserV1Service_GetUserHistoryCsv_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
+		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
+		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+		return
 	})
 
 	return nil
@@ -598,7 +563,7 @@ func RegisterUserV1ServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 			return
 		}
 
-		forward_UserV1Service_GetUserHistoryCsv_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserV1Service_GetUserHistoryCsv_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -630,5 +595,5 @@ var (
 
 	forward_UserV1Service_RemoveUser_0 = runtime.ForwardResponseMessage
 
-	forward_UserV1Service_GetUserHistoryCsv_0 = runtime.ForwardResponseMessage
+	forward_UserV1Service_GetUserHistoryCsv_0 = runtime.ForwardResponseStream
 )

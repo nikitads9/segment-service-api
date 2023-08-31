@@ -77,6 +77,7 @@ install-go-deps: .install-go-deps
 			go install github.com/golang/protobuf/protoc-gen-go
 			go install github.com/golang/protobuf/proto
 			go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+			go install -v golang.org/x/tools/gopls@latest
 		go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 			go get -u github.com/fullstorydev/grpcui/...
 			go mod tidy

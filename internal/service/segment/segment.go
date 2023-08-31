@@ -13,3 +13,14 @@ func NewSegmentService(segmentRepository segment.Repository) *Service {
 		segmentRepository: segmentRepository,
 	}
 }
+
+func NewMockSegmentService(deps ...interface{}) *Service {
+	is := Service{}
+	for _, val := range deps {
+		switch s := val.(type) {
+		case segment.Repository:
+			is.segmentRepository = s
+		}
+	}
+	return &is
+}

@@ -43,9 +43,10 @@ service UserV1Service {
         };
     }
     
-    rpc GetUserHistoryCsv (GetUserHistoryCsvRequest) returns (GetUserHistoryCsvResponse) {
+    rpc GetUserHistoryCsv (GetUserHistoryCsvRequest) returns (stream GetUserHistoryCsvResponse) {
         option (google.api.http) = {
             get: "/user/download-history/{id}"
+            response_body: "*"
         };
     }
 }
@@ -103,5 +104,6 @@ message GetUserHistoryCsvRequest {
 }
 
 message GetUserHistoryCsvResponse {
+
     bytes chunk = 1;
 }

@@ -28,7 +28,7 @@ type UserV1ServiceClient interface {
 	SetExpireTime(ctx context.Context, in *SetExpireTimeRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserResponse, error)
 	RemoveUser(ctx context.Context, in *RemoveUsertRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	GetUserHistoryCsv(ctx context.Context, in *GetUserHistoryCsvRequest, opts ...grpc.CallOption) (*GetUserHistoryCsvResponse, error)
+	GetUserHistoryCsv(ctx context.Context, in *GetUserHistoryCsvRequest, opts ...grpc.CallOption) (UserV1Service_GetUserHistoryCsvClient, error)
 }
 
 type userV1ServiceClient struct {
@@ -84,13 +84,36 @@ func (c *userV1ServiceClient) RemoveUser(ctx context.Context, in *RemoveUsertReq
 	return out, nil
 }
 
-func (c *userV1ServiceClient) GetUserHistoryCsv(ctx context.Context, in *GetUserHistoryCsvRequest, opts ...grpc.CallOption) (*GetUserHistoryCsvResponse, error) {
-	out := new(GetUserHistoryCsvResponse)
-	err := c.cc.Invoke(ctx, "/segment.service.api.UserV1Service/GetUserHistoryCsv", in, out, opts...)
+func (c *userV1ServiceClient) GetUserHistoryCsv(ctx context.Context, in *GetUserHistoryCsvRequest, opts ...grpc.CallOption) (UserV1Service_GetUserHistoryCsvClient, error) {
+	stream, err := c.cc.NewStream(ctx, &UserV1Service_ServiceDesc.Streams[0], "/segment.service.api.UserV1Service/GetUserHistoryCsv", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &userV1ServiceGetUserHistoryCsvClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type UserV1Service_GetUserHistoryCsvClient interface {
+	Recv() (*GetUserHistoryCsvResponse, error)
+	grpc.ClientStream
+}
+
+type userV1ServiceGetUserHistoryCsvClient struct {
+	grpc.ClientStream
+}
+
+func (x *userV1ServiceGetUserHistoryCsvClient) Recv() (*GetUserHistoryCsvResponse, error) {
+	m := new(GetUserHistoryCsvResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // UserV1ServiceServer is the server API for UserV1Service service.
@@ -102,7 +125,7 @@ type UserV1ServiceServer interface {
 	SetExpireTime(context.Context, *SetExpireTimeRequest) (*emptypb.Empty, error)
 	AddUser(context.Context, *AddUserRequest) (*AddUserResponse, error)
 	RemoveUser(context.Context, *RemoveUsertRequest) (*emptypb.Empty, error)
-	GetUserHistoryCsv(context.Context, *GetUserHistoryCsvRequest) (*GetUserHistoryCsvResponse, error)
+	GetUserHistoryCsv(*GetUserHistoryCsvRequest, UserV1Service_GetUserHistoryCsvServer) error
 	mustEmbedUnimplementedUserV1ServiceServer()
 }
 
@@ -125,8 +148,8 @@ func (UnimplementedUserV1ServiceServer) AddUser(context.Context, *AddUserRequest
 func (UnimplementedUserV1ServiceServer) RemoveUser(context.Context, *RemoveUsertRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveUser not implemented")
 }
-func (UnimplementedUserV1ServiceServer) GetUserHistoryCsv(context.Context, *GetUserHistoryCsvRequest) (*GetUserHistoryCsvResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUserHistoryCsv not implemented")
+func (UnimplementedUserV1ServiceServer) GetUserHistoryCsv(*GetUserHistoryCsvRequest, UserV1Service_GetUserHistoryCsvServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetUserHistoryCsv not implemented")
 }
 func (UnimplementedUserV1ServiceServer) mustEmbedUnimplementedUserV1ServiceServer() {}
 
@@ -231,22 +254,25 @@ func _UserV1Service_RemoveUser_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserV1Service_GetUserHistoryCsv_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUserHistoryCsvRequest)
-	if err := dec(in); err != nil {
-		return nil, err
+func _UserV1Service_GetUserHistoryCsv_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GetUserHistoryCsvRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
 	}
-	if interceptor == nil {
-		return srv.(UserV1ServiceServer).GetUserHistoryCsv(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/segment.service.api.UserV1Service/GetUserHistoryCsv",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserV1ServiceServer).GetUserHistoryCsv(ctx, req.(*GetUserHistoryCsvRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	return srv.(UserV1ServiceServer).GetUserHistoryCsv(m, &userV1ServiceGetUserHistoryCsvServer{stream})
+}
+
+type UserV1Service_GetUserHistoryCsvServer interface {
+	Send(*GetUserHistoryCsvResponse) error
+	grpc.ServerStream
+}
+
+type userV1ServiceGetUserHistoryCsvServer struct {
+	grpc.ServerStream
+}
+
+func (x *userV1ServiceGetUserHistoryCsvServer) Send(m *GetUserHistoryCsvResponse) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 // UserV1Service_ServiceDesc is the grpc.ServiceDesc for UserV1Service service.
@@ -276,11 +302,13 @@ var UserV1Service_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "RemoveUser",
 			Handler:    _UserV1Service_RemoveUser_Handler,
 		},
+	},
+	Streams: []grpc.StreamDesc{
 		{
-			MethodName: "GetUserHistoryCsv",
-			Handler:    _UserV1Service_GetUserHistoryCsv_Handler,
+			StreamName:    "GetUserHistoryCsv",
+			Handler:       _UserV1Service_GetUserHistoryCsv_Handler,
+			ServerStreams: true,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
 	Metadata: "user.proto",
 }

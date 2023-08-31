@@ -1,5 +1,7 @@
 package segment
 
+//go:generate mockgen --build_flags=--mod=mod -destination=../mocks/segment_service_repository.go -package=mocks . Repository
+
 import (
 	"context"
 
