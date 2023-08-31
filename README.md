@@ -146,3 +146,17 @@ docker-compose up -d
 **DELETE** `host:port/segment/remove-segment/{id}` <br />
 У запроса нет тела. Возвращаемое значение должно выглядеть как пустой объект JSON.
 </details>
+<details>
+<summary> 
+8. метод GetUserHistoryCsv
+</summary>
+  
+**GET** `host:port/user/download-history/{id}` <br />
+У запроса нет тела, передается только id пользователя. В ответ приходит такая структура, в которой содержится массив байтов csv файла с историей сегментов пользователя:
+```
+	"result": {
+		"chunk": "string"
+	}
+}
+```
+</details>
