@@ -9,81 +9,30 @@
 
 ## Project setup
 
-### Out of the box scenario
+
+### Installation
 
 <p align="justify">
 	
-In case you want to just use this service out of the box, you need to verify the installation of goose and docker. If you don't have goose installed,
-```
-curl -fsSL \
-    https://raw.githubusercontent.com/pressly/goose/master/install.sh |\
-    GOOSE_INSTALL=/usr/local/bin/.goose sh -s v3.5.0
-sudo cp -r /home/$USER/.goose/bin/goose /usr/local/bin
-```
-Then you need to pull Docker images from my repository on DockerHub.
-```
-docker pull nikitads9/note-service:app
-docker pull postgres:14-alpine3.15
-```
-When it is done, it's time to run containers using pulled images. If you want to specify your own database connection parameters, you should change the environment `-e` and port `-p` flags in the command featured below:
-```
-docker network create note-service-network
-docker run -d -e POSTGRES_DB='notes_db' \
- -e POSTGRES_PASSWORD='notes_pass'\
- -e POSTGRES_USER='postgres'\
- -e PGDATA='/var/lib/postgresql/data/notification'\
- -p 5432:5432\
- -v postgres-volume:'/var/lib/postgresql/data'\
- --network note-service-network \
- --name postgres\
- postgres:14-alpine3.15
-docker run -d --name app\
- -p 50051:50051\
- -p 8000:8000\
- -v 'app-volume:/var/lib/note-app/data'\
- --network note-service-network\
- nikitads9/note-service:app
-```
-**NB**: If you have changed the database configuration in `docker run` command, you should also edit the connection variables in **migration-local.sh** script file. 
-And finally, when both containers are up, run this bash script for migration:
-```
-bash migration-local.sh
-```
-Now the database table is created and you can send HTTP and gRPC requests to the server app.
-</p>
-
-### Advanced installation
-
-<p align="justify">
-	
-In case you want to build the service yourself, you will need to have these tools installed:
+Для сборки сервиса на базе данного репозитория нужны следующие утилиты:
 - Makefile
-- Goose
 - Protocol Buffer Compiler ([protoc](https://github.com/protocolbuffers/protobuf/releases))
-- Docker
-- Golang
+- [Docker](https://www.docker.com/)
+- ([Golang](https://go.dev/dl/))
 	
-If you are ok with that, be sure to edit database connection parameters in **config.yml** file among with **Dockerfile** and **migration-local.sh**. The commands to launch the server app and database are listed below:
+Параметры соединения с базой данных находятся в файле **config.yml**, а также в **docker-compose**. При изменении конфигурационного файла, необходимо также внести изменения в файл **docker-compose**. Для запуска сервиса нужно ввести следующие команды:
 ```
-git clone https://github.com/nikitads9/note-service-api.git
-cd note-service-api/
+git clone https://github.com/nikitads9/segment-service-api.git
+cd segment-service-api/
 make deps
 make vendor-proto
 make generate
 docker-compose up -d
-curl -fsSL \
-    https://raw.githubusercontent.com/pressly/goose/master/install.sh |\
-    GOOSE_INSTALL=$HOME/.goose sh -s v3.5.0
-sudo cp -r /home/$USER/.goose/bin/goose /usr/local/bin
-bash migration-local.sh
 ```
 - The `make deps` command installs dependencies required for this project.
 - The `make vendor-proto` command downloads the required tools for protobuf and validate to work. Running this command will create proto folder in the root of the project with all necessary `.proto` files.
 - The `make generate` command creates three files: `grpc.pb.go`, `pb.go`, `pb.gw.go` based on API description in **note_v1.proto**. These files contain golang structs, interfaces and golang methods generated on the basis of Protobuffer interface description.
 - The `docker-compose up -d` command downloads **alpine3.15** image from Docker Hub (if you don't have it locally), builds a binary and creates two containers: one for server app which is the the API service itself and the second one acts as database server. Both containers are connected to default Docker network which enables the two containers to communicate successfully. 
-- The `curl -fsSL...` command downloads goose tool for database migration and initiates the installation process. Another way of installing goose is to run ```go install github.com/pressly/goose/v3/cmd/goose@latest``` outside of this repository (goose binary will turn up at the **%GOPATH%/bin** folder).
-- The `sudo cp -r /home/$USER/.goose/bin/goose /usr/local/bin` command copies goose binary file to `usr/local/bin` folder so that your Linux could run goose commands from anywhere.
-- The `bash migration-local.sh` command starts the bash script, that completes database migration specified in `.sql` file in **/migrations** folder. The parameters required for database connection to complete migration are specified in **migration-local.sh**.
 
 </justify>
 
