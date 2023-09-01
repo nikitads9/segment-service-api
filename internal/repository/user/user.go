@@ -1,6 +1,6 @@
 package user
 
-//go:generate mockgen --build_flags=--mod=mod -destination=../mocks/user-mocks/user_service_repository.go -package=user-mocks . Repository
+//go:generate mockgen --build_flags=--mod=mod -destination=../mocks/user_mocks/user_service_repository.go -package=user_mocks . Repository
 
 import (
 	"bytes"

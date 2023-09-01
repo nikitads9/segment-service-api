@@ -81,3 +81,4 @@ install-go-deps: .install-go-deps
 			go install -v golang.org/x/tools/gopls@latest
 			go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 			go mod tidy
+			go mod vendor

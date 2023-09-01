@@ -16,3 +16,10 @@ func NewImplementation(segmentService *segment.Service) *Implementation {
 		segmentService,
 	}
 }
+
+func newMockImplementation(i Implementation) *Implementation {
+	return &Implementation{
+		desc.UnimplementedSegmentV1ServiceServer{},
+		i.segmentService,
+	}
+}

@@ -11,29 +11,25 @@ import (
 	"github.com/nikitads9/segment-service-api/internal/service/segment"
 	desc "github.com/nikitads9/segment-service-api/pkg/segment_api"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func Test_AddSegment(t *testing.T) {
+func Test_RemoveSegment(t *testing.T) {
 	var (
 		ctx       = context.Background()
 		mock      = gomock.NewController(t)
 		segmentId = gofakeit.Int64()
-		slug      = gofakeit.BeerName()
 
 		segmentErr = errors.New(gofakeit.Phrase())
 
-		validRequest = &desc.AddSegmentRequest{
-			Slug: slug,
-		}
-
-		validResponse = &desc.AddSegmentResponse{
+		validRequest = &desc.RemoveSegmentRequest{
 			Id: segmentId,
 		}
 	)
 	segmentRepoMock := segmentRepoMocks.NewMockRepository(mock)
 	gomock.InOrder(
-		segmentRepoMock.EXPECT().AddSegment(ctx, slug).Return(segmentId, nil).Times(1),
-		segmentRepoMock.EXPECT().AddSegment(ctx, slug).Return(int64(0), segmentErr).Times(1),
+		segmentRepoMock.EXPECT().RemoveSegment(ctx, segmentId).Return(nil).Times(1),
+		segmentRepoMock.EXPECT().RemoveSegment(ctx, segmentId).Return(segmentErr).Times(1),
 	)
 
 	api := newMockImplementation(Implementation{
@@ -41,13 +37,13 @@ func Test_AddSegment(t *testing.T) {
 	})
 
 	t.Run("success case", func(t *testing.T) {
-		res, err := api.AddSegment(ctx, validRequest)
+		res, err := api.RemoveSegment(ctx, validRequest)
 		require.Nil(t, err)
-		require.Equal(t, res.GetId(), validResponse.GetId())
+		require.Equal(t, res, &emptypb.Empty{})
 	})
 
 	t.Run("error case", func(t *testing.T) {
-		_, err := api.AddSegment(ctx, validRequest)
+		_, err := api.RemoveSegment(ctx, validRequest)
 		require.Error(t, err)
 		require.Equal(t, err, segmentErr)
 	})

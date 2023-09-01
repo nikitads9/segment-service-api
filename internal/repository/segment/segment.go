@@ -1,11 +1,12 @@
 package segment
 
-//go:generate mockgen --build_flags=--mod=mod -destination=../mocks/segment-mocks/segment_service_repository.go -package=segment-mocks . Repository
+//go:generate mockgen --build_flags=--mod=mod -destination=../mocks/segment_mocks/segment_service_repository.go -package=segment_mocks . Repository
 
 import (
 	"context"
 
 	sq "github.com/Masterminds/squirrel"
+	_ "github.com/golang/mock/mockgen/model"
 	"github.com/nikitads9/segment-service-api/internal/client/db"
 	"github.com/nikitads9/segment-service-api/internal/repository/table"
 	"google.golang.org/grpc/codes"
