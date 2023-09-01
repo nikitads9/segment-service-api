@@ -2,9 +2,10 @@ package user
 
 import (
 	"context"
-	"time"
+
+	"github.com/nikitads9/segment-service-api/internal/model"
 )
 
-func (s *Service) SetExpireTime(ctx context.Context, userId int64, slug string, expiration time.Time) error {
-	return s.userRepository.SetExpireTime(ctx, userId, slug, expiration)
+func (s *Service) SetExpireTime(ctx context.Context, mod *model.SetExpireTimeInfo) error {
+	return s.userRepository.SetExpireTime(ctx, mod)
 }

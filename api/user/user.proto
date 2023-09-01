@@ -104,6 +104,5 @@ message GetUserHistoryCsvRequest {
 }
 
 message GetUserHistoryCsvResponse {
-
     bytes chunk = 1;
 }

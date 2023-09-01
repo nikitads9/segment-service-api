@@ -15,6 +15,7 @@
 proto/
 .vscode/
 bin/
+vendor/
 
 # Go workspace file
 go.work

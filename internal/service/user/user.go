@@ -16,3 +16,14 @@ func NewUserService(userRepository user.Repository, txManager db.TxManager) *Ser
 		txManager:      txManager,
 	}
 }
+
+func NewMockUserService(deps ...interface{}) *Service {
+	is := Service{}
+	for _, val := range deps {
+		switch s := val.(type) {
+		case user.Repository:
+			is.userRepository = s
+		}
+	}
+	return &is
+}

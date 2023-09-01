@@ -1,5 +1,7 @@
 package user
 
+//go:generate mockgen --build_flags=--mod=mod -destination=../mocks/user-mocks/user_service_repository.go -package=user-mocks . Repository
+
 import (
 	"bytes"
 	"context"
@@ -8,6 +10,7 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
+	_ "github.com/golang/mock/mockgen/model"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/nikitads9/segment-service-api/internal/client/db"
@@ -24,7 +27,7 @@ type Repository interface {
 	AddToSegment(ctx context.Context, slug string, userId int64) error
 	RemoveFromSegment(ctx context.Context, slug string, userId int64) error
 	GetSegments(ctx context.Context, userId int64) ([]string, error)
-	SetExpireTime(ctx context.Context, userId int64, slug string, expiration time.Time) error
+	SetExpireTime(ctx context.Context, mod *model.SetExpireTimeInfo) error
 	AddUser(ctx context.Context, userName string) (int64, error)
 	GetUser(ctx context.Context, userId int64) (string, error)
 	RemoveUser(ctx context.Context, userId int64) error
@@ -177,8 +180,8 @@ func (r *repository) GetSegments(ctx context.Context, userId int64) ([]string, e
 	return segments, nil
 }
 
-func (r *repository) SetExpireTime(ctx context.Context, userId int64, slug string, expiration time.Time) error {
-	segmentId, err := r.GetSegmentId(ctx, slug)
+func (r *repository) SetExpireTime(ctx context.Context, mod *model.SetExpireTimeInfo) error {
+	segmentId, err := r.GetSegmentId(ctx, mod.Slug)
 	if err != nil {
 		return err
 	}
@@ -187,9 +190,9 @@ func (r *repository) SetExpireTime(ctx context.Context, userId int64, slug strin
 	}
 
 	builder := sq.Update(table.JunctionTable).
-		Set("time_of_expire", expiration).
+		Set("time_of_expire", mod.ExpireTime).
 		Where(sq.And{
-			sq.Eq{"user_id": userId},
+			sq.Eq{"user_id": mod.UserId},
 			sq.Eq{"segment_id": segmentId},
 		}).PlaceholderFormat(sq.Dollar)
 
