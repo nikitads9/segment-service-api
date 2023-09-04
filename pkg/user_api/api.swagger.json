@@ -255,13 +255,13 @@
           "type": "string",
           "format": "int64"
         },
-        "slug_to_add": {
+        "slugs_to_add": {
           "type": "array",
           "items": {
             "type": "string"
           }
         },
-        "slug_to_remove": {
+        "slugs_to_remove": {
           "type": "array",
           "items": {
             "type": "string"

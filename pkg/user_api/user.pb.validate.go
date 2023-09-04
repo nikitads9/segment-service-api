@@ -68,14 +68,14 @@ func (m *ModifySegmentsRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	_ModifySegmentsRequest_SlugToAdd_Unique := make(map[string]struct{}, len(m.GetSlugToAdd()))
+	_ModifySegmentsRequest_SlugsToAdd_Unique := make(map[string]struct{}, len(m.GetSlugsToAdd()))
 
-	for idx, item := range m.GetSlugToAdd() {
+	for idx, item := range m.GetSlugsToAdd() {
 		_, _ = idx, item
 
-		if _, exists := _ModifySegmentsRequest_SlugToAdd_Unique[item]; exists {
+		if _, exists := _ModifySegmentsRequest_SlugsToAdd_Unique[item]; exists {
 			err := ModifySegmentsRequestValidationError{
-				field:  fmt.Sprintf("SlugToAdd[%v]", idx),
+				field:  fmt.Sprintf("SlugsToAdd[%v]", idx),
 				reason: "repeated value must contain unique items",
 			}
 			if !all {
@@ -83,12 +83,12 @@ func (m *ModifySegmentsRequest) validate(all bool) error {
 			}
 			errors = append(errors, err)
 		} else {
-			_ModifySegmentsRequest_SlugToAdd_Unique[item] = struct{}{}
+			_ModifySegmentsRequest_SlugsToAdd_Unique[item] = struct{}{}
 		}
 
 		if l := utf8.RuneCountInString(item); l < 1 || l > 100 {
 			err := ModifySegmentsRequestValidationError{
-				field:  fmt.Sprintf("SlugToAdd[%v]", idx),
+				field:  fmt.Sprintf("SlugsToAdd[%v]", idx),
 				reason: "value length must be between 1 and 100 runes, inclusive",
 			}
 			if !all {
@@ -99,14 +99,14 @@ func (m *ModifySegmentsRequest) validate(all bool) error {
 
 	}
 
-	_ModifySegmentsRequest_SlugToRemove_Unique := make(map[string]struct{}, len(m.GetSlugToRemove()))
+	_ModifySegmentsRequest_SlugsToRemove_Unique := make(map[string]struct{}, len(m.GetSlugsToRemove()))
 
-	for idx, item := range m.GetSlugToRemove() {
+	for idx, item := range m.GetSlugsToRemove() {
 		_, _ = idx, item
 
-		if _, exists := _ModifySegmentsRequest_SlugToRemove_Unique[item]; exists {
+		if _, exists := _ModifySegmentsRequest_SlugsToRemove_Unique[item]; exists {
 			err := ModifySegmentsRequestValidationError{
-				field:  fmt.Sprintf("SlugToRemove[%v]", idx),
+				field:  fmt.Sprintf("SlugsToRemove[%v]", idx),
 				reason: "repeated value must contain unique items",
 			}
 			if !all {
@@ -114,12 +114,12 @@ func (m *ModifySegmentsRequest) validate(all bool) error {
 			}
 			errors = append(errors, err)
 		} else {
-			_ModifySegmentsRequest_SlugToRemove_Unique[item] = struct{}{}
+			_ModifySegmentsRequest_SlugsToRemove_Unique[item] = struct{}{}
 		}
 
 		if l := utf8.RuneCountInString(item); l < 1 || l > 100 {
 			err := ModifySegmentsRequestValidationError{
-				field:  fmt.Sprintf("SlugToRemove[%v]", idx),
+				field:  fmt.Sprintf("SlugsToRemove[%v]", idx),
 				reason: "value length must be between 1 and 100 runes, inclusive",
 			}
 			if !all {
@@ -447,9 +447,27 @@ func (m *SetExpireTimeRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Id
+	if m.GetId() <= 0 {
+		err := SetExpireTimeRequestValidationError{
+			field:  "Id",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
-	// no validation rules for Slug
+	if l := utf8.RuneCountInString(m.GetSlug()); l < 1 || l > 100 {
+		err := SetExpireTimeRequestValidationError{
+			field:  "Slug",
+			reason: "value length must be between 1 and 100 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	if all {
 		switch v := interface{}(m.GetExpirationTime()).(type) {

@@ -52,8 +52,8 @@ service UserV1Service {
 }
 
 message ModifySegmentsRequest {
-    int64 id = 1 [json_name = "id", (validate.rules).int64 = {gt : 0}];
-    repeated string slug_to_add = 2 [json_name = "slugs-to-add", (validate.rules).repeated = {
+    int64 id = 1 [json_name = "id", (validate.rules).int64 = { gt : 0 }];
+    repeated string slugs_to_add = 2 [json_name = "slugs-to-add", (validate.rules).repeated = {
         unique : true
         items: {
             string: {
@@ -61,7 +61,7 @@ message ModifySegmentsRequest {
                 max_len: 100
             }
         }}];
-    repeated string slug_to_remove = 3 [json_name = "slugs-to-remove", (validate.rules).repeated = {
+    repeated string slugs_to_remove = 3 [json_name = "slugs-to-remove", (validate.rules).repeated = {
         unique : true
         items: {
             string: {
@@ -82,8 +82,8 @@ message GetSegmentsResponse{
 }
 
 message SetExpireTimeRequest {
-    int64 id = 1;
-    string slug = 2;
+    int64 id = 1 [json_name = "id", (validate.rules).int64 = { gt : 0 }];
+    string slug = 2 [json_name = "slug", (validate.rules).string = { min_len: 1, max_len: 100 }];
     google.protobuf.Timestamp expiration_time = 3 [json_name = "expiration-time"];
 }
 

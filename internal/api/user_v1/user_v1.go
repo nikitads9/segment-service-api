@@ -16,3 +16,10 @@ func NewImplementation(userService *user.Service) *Implementation {
 		userService,
 	}
 }
+
+func newMockImplementation(i Implementation) *Implementation {
+	return &Implementation{
+		desc.UnimplementedUserV1ServiceServer{},
+		i.userService,
+	}
+}

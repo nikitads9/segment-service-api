@@ -12,8 +12,8 @@ func ToModifySegmentInfo(req *desc.ModifySegmentsRequest) *model.ModifySegmentIn
 
 	return &model.ModifySegmentInfo{
 		UserId:        req.GetId(),
-		SlugsToAdd:    req.GetSlugToAdd(),
-		SlugsToRemove: req.GetSlugToRemove(),
+		SlugsToAdd:    req.GetSlugsToAdd(),
+		SlugsToRemove: req.GetSlugsToRemove(),
 	}
 }
 
