@@ -5,13 +5,8 @@ import (
 
 	pgx "github.com/jackc/pgx/v5"
 	"github.com/nikitads9/segment-service-api/internal/client/db"
+	mocks "github.com/nikitads9/segment-service-api/internal/client/db/mocks_db"
 	"github.com/pkg/errors"
-)
-
-type key string
-
-const (
-	TxKey key = "tx"
 )
 
 type manager struct {
@@ -25,12 +20,12 @@ func NewTransactionManager(db db.Transactor) db.TxManager {
 }
 
 func MakeContextTx(ctx context.Context, tx pgx.Tx) context.Context {
-	return context.WithValue(ctx, TxKey, tx)
+	return context.WithValue(ctx, db.TxKey, tx)
 }
 
 func (m *manager) transaction(ctx context.Context, opts pgx.TxOptions, fn db.Handler) (err error) {
 	// Если это вложенная транзакция, пропускаем инициацию новой транзакции и выполняем обработчик.
-	tx, ok := ctx.Value(TxKey).(pgx.Tx)
+	tx, ok := ctx.Value(db.TxKey).(pgx.Tx)
 	if ok {
 		return fn(ctx)
 	}
@@ -82,4 +77,10 @@ func (m *manager) transaction(ctx context.Context, opts pgx.TxOptions, fn db.Han
 func (m *manager) ReadCommitted(ctx context.Context, f db.Handler) error {
 	txOpts := pgx.TxOptions{IsoLevel: pgx.ReadCommitted}
 	return m.transaction(ctx, txOpts, f)
+}
+
+func NewMockTransactionManager(db *mocks.MockDB) *manager {
+	return &manager{
+		db: db,
+	}
 }

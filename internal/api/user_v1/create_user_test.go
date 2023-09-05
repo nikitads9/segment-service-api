@@ -37,8 +37,8 @@ func Test_AddUser(t *testing.T) {
 		userRepoMock.EXPECT().AddUser(ctx, userName).Return(int64(0), userErr).Times(1),
 	)
 
-	api := newMockImplementation(Implementation{
-		userService: user.NewMockUserService()})
+	api := NewMockImplementation(Implementation{
+		userService: user.NewMockUserService(userRepoMock)})
 
 	t.Run("success case", func(t *testing.T) {
 		res, err := api.AddUser(ctx, validRequest)

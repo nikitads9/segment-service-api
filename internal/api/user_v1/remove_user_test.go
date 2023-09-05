@@ -31,7 +31,7 @@ func Test_RemoveUser(t *testing.T) {
 		userRepoMock.EXPECT().RemoveUser(ctx, userId).Return(userErr).Times(1),
 	)
 
-	api := newMockImplementation(Implementation{
+	api := NewMockImplementation(Implementation{
 		userService: user.NewMockUserService(userRepoMock),
 	})
 

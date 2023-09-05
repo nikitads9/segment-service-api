@@ -8,11 +8,11 @@ import (
 
 type Client interface {
 	Close() error
-	DB() *DB
+	DB() *db
 }
 
 type client struct {
-	db        *DB
+	db        *db
 	closeFunc context.CancelFunc
 }
 
@@ -25,7 +25,7 @@ func NewClient(ctx context.Context, connString string) (Client, error) {
 	_, cancel := context.WithCancel(ctx)
 
 	return &client{
-		db: &DB{
+		db: &db{
 			pool: dbc,
 		},
 		closeFunc: cancel,
@@ -46,6 +46,6 @@ func (c *client) Close() error {
 	return nil
 }
 
-func (c *client) DB() *DB {
+func (c *client) DB() *db {
 	return c.db
 }

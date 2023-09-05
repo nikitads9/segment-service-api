@@ -23,6 +23,8 @@ func NewMockUserService(deps ...interface{}) *Service {
 		switch s := val.(type) {
 		case user.Repository:
 			is.userRepository = s
+		case db.TxManager:
+			is.txManager = s
 		}
 	}
 	return &is
