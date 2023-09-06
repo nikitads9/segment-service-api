@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 
 	gofakeit "github.com/brianvoe/gofakeit/v6"
 	"github.com/golang/mock/gomock"
@@ -22,7 +23,7 @@ func Test_SetExpireTime(t *testing.T) {
 		mock    = gomock.NewController(t)
 		userId  = gofakeit.Int64()
 		slug    = gofakeit.CarModel()
-		expTime = gofakeit.Date()
+		expTime = gofakeit.Date().Round(time.Second)
 		userErr = errors.New(gofakeit.Phrase())
 
 		validRequest = &desc.SetExpireTimeRequest{
@@ -49,7 +50,7 @@ func Test_SetExpireTime(t *testing.T) {
 	t.Run("success case", func(t *testing.T) {
 		res, err := api.SetExpireTime(ctx, validRequest)
 		require.Nil(t, err)
-		require.Equal(t, emptypb.Empty{}, res)
+		require.Equal(t, &emptypb.Empty{}, res)
 	})
 
 	t.Run("error case", func(t *testing.T) {
