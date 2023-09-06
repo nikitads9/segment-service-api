@@ -15,6 +15,7 @@ import (
 	descUserV1 "github.com/nikitads9/segment-service-api/pkg/user_api"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/reflection"
 )
 
 type App struct {
@@ -110,6 +111,8 @@ func (a *App) startGRPC() error {
 	}
 
 	defer list.Close()
+
+	reflection.Register(a.grpcServer)
 
 	if err = a.grpcServer.Serve(list); err != nil {
 		log.Fatalf("failed to process gRPC server: %s", err.Error())

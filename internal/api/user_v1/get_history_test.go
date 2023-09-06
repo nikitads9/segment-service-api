@@ -3,8 +3,6 @@ package user_v1
 import (
 	"bytes"
 	"context"
-	"errors"
-	"io"
 	"log"
 	"net"
 	"testing"
@@ -80,19 +78,12 @@ func Test_GetHistory(t *testing.T) {
 		userRepoMock.EXPECT().GetUserHistoryCsv(ctx, userId).Return(bytes, nil).Times(1)
 
 		out, err := client.GetUserHistoryCsv(ctx, validRequest)
+		require.Nil(t, err)
 
-		var outs []*desc.GetUserHistoryCsvResponse
-
-		for {
-			o, err := out.Recv()
-			if errors.Is(err, io.EOF) {
-				break
-			}
-			outs = append(outs, o)
-		}
+		output, err := out.Recv()
 
 		require.Nil(t, err)
-		require.Equal(t, res, outs[0].Chunk)
+		require.Equal(t, res, output.Chunk)
 	})
 
 	t.Run("error case", func(t *testing.T) {

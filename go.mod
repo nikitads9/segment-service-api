@@ -6,6 +6,7 @@ require (
 	github.com/brianvoe/gofakeit/v6 v6.23.2
 	github.com/envoyproxy/protoc-gen-validate v1.0.2
 	github.com/georgysavva/scany/v2 v2.0.0
+	github.com/gocarina/gocsv v0.0.0-20230616125104-99d496ca653d
 	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.3
 	github.com/google/uuid v1.3.1
