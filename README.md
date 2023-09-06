@@ -20,6 +20,8 @@
 │  └─ user
 │     └─ user.proto
 ├─ cmd
+│  ├─ client
+│  │  └─ segment_client.go
 │  └─ server
 │     └─ segment_service.go
 ├─ config.yml
@@ -119,6 +121,7 @@
 │     └─ user_grpc.pb.go
 └─ readme_assets
    └─ logo-avito.png
+
 ```
 </details>
 
