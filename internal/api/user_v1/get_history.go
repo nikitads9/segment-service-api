@@ -24,16 +24,15 @@ func (i *Implementation) GetUserHistoryCsv(req *desc.GetUserHistoryCsvRequest, r
 	header1 := metadata.Pairs("Content-Type", "text/csv")
 	header2 := metadata.Pairs("content-length", strconv.Itoa(len(buff)))
 
-	err = responseStream.SetHeader(header1)
-	if err != nil {
+	if err = responseStream.SetHeader(header1); err != nil {
 		return err
 	}
-	err = responseStream.SetHeader(header2)
-	if err != nil {
+
+	if err = responseStream.SetHeader(header2); err != nil {
 		return err
 	}
-	err = responseStream.Send(resp)
-	if err != nil {
+
+	if err = responseStream.Send(resp); err != nil {
 		return err
 	}
 

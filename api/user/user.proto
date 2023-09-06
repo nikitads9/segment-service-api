@@ -84,7 +84,7 @@ message GetSegmentsResponse{
 message SetExpireTimeRequest {
     int64 id = 1 [json_name = "id", (validate.rules).int64 = { gt : 0 }];
     string slug = 2 [json_name = "slug", (validate.rules).string = { min_len: 1, max_len: 100 }];
-    google.protobuf.Timestamp expiration_time = 3 [json_name = "expiration-time"];
+    google.protobuf.Timestamp expiration_time = 3 [json_name = "expiration-time", (validate.rules).timestamp = { gt_now: true, required: true }];
 }
 
 message AddUserRequest {

@@ -26,25 +26,26 @@ func Test_RemoveSegment(t *testing.T) {
 			Id: segmentId,
 		}
 	)
+
 	segmentRepoMock := segmentRepoMocks.NewMockRepository(mock)
+	api := newMockImplementation(Implementation{
+		segmentService: segment.NewMockSegmentService(segmentRepoMock),
+	})
+
 	gomock.InOrder(
 		segmentRepoMock.EXPECT().RemoveSegment(ctx, segmentId).Return(nil).Times(1),
 		segmentRepoMock.EXPECT().RemoveSegment(ctx, segmentId).Return(segmentErr).Times(1),
 	)
 
-	api := newMockImplementation(Implementation{
-		segmentService: segment.NewMockSegmentService(segmentRepoMock),
-	})
-
 	t.Run("success case", func(t *testing.T) {
 		res, err := api.RemoveSegment(ctx, validRequest)
 		require.Nil(t, err)
-		require.Equal(t, res, &emptypb.Empty{})
+		require.Equal(t, &emptypb.Empty{}, res)
 	})
 
 	t.Run("error case", func(t *testing.T) {
 		_, err := api.RemoveSegment(ctx, validRequest)
 		require.Error(t, err)
-		require.Equal(t, err, segmentErr)
+		require.Equal(t, segmentErr, err)
 	})
 }

@@ -11,7 +11,7 @@ import (
 	"github.com/nikitads9/segment-service-api/internal/repository/table"
 )
 
-func (r *repository) GetUserHistoryCsv(ctx context.Context, userId int64) (bytes.Buffer, error) {
+func (r *repository) GetUserHistoryCsv(ctx context.Context, userId int64) (*bytes.Buffer, error) {
 	var buffer bytes.Buffer
 
 	builder := sq.Select("slug", "added_at", "time_of_expire").
@@ -21,7 +21,7 @@ func (r *repository) GetUserHistoryCsv(ctx context.Context, userId int64) (bytes
 
 	query, args, err := builder.ToSql()
 	if err != nil {
-		return buffer, err
+		return nil, err
 	}
 
 	q := db.Query{
@@ -32,7 +32,7 @@ func (r *repository) GetUserHistoryCsv(ctx context.Context, userId int64) (bytes
 	var dest []model.HistoryLine
 	err = r.client.DB().SelectContext(ctx, &dest, q, args...)
 	if err != nil {
-		return buffer, err
+		return nil, err
 	}
 
 	writer := csv.NewWriter(&buffer)
@@ -42,8 +42,8 @@ func (r *repository) GetUserHistoryCsv(ctx context.Context, userId int64) (bytes
 
 	writer.Flush()
 	if err := writer.Error(); err != nil {
-		return buffer, err
+		return nil, err
 	}
 
-	return buffer, nil
+	return &buffer, nil
 }

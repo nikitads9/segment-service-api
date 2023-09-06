@@ -26,24 +26,24 @@ func Test_RemoveUser(t *testing.T) {
 	)
 
 	userRepoMock := userRepoMocks.NewMockRepository(mock)
+	api := NewMockImplementation(Implementation{
+		userService: user.NewMockUserService(userRepoMock),
+	})
+
 	gomock.InOrder(
 		userRepoMock.EXPECT().RemoveUser(ctx, userId).Return(nil).Times(1),
 		userRepoMock.EXPECT().RemoveUser(ctx, userId).Return(userErr).Times(1),
 	)
 
-	api := NewMockImplementation(Implementation{
-		userService: user.NewMockUserService(userRepoMock),
-	})
-
 	t.Run("success case", func(t *testing.T) {
 		res, err := api.RemoveUser(ctx, validReq)
 		require.Nil(t, err)
-		require.Equal(t, res, &emptypb.Empty{})
+		require.Equal(t, &emptypb.Empty{}, res)
 	})
 
 	t.Run("error case", func(t *testing.T) {
 		_, err := api.RemoveUser(ctx, validReq)
 		require.Error(t, err)
-		require.Equal(t, err, userErr)
+		require.Equal(t, userErr, err)
 	})
 }

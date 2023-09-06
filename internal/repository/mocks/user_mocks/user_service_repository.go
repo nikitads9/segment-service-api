@@ -111,10 +111,10 @@ func (mr *MockRepositoryMockRecorder) GetUser(arg0, arg1 interface{}) *gomock.Ca
 }
 
 // GetUserHistoryCsv mocks base method.
-func (m *MockRepository) GetUserHistoryCsv(arg0 context.Context, arg1 int64) (bytes.Buffer, error) {
+func (m *MockRepository) GetUserHistoryCsv(arg0 context.Context, arg1 int64) (*bytes.Buffer, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserHistoryCsv", arg0, arg1)
-	ret0, _ := ret[0].(bytes.Buffer)
+	ret0, _ := ret[0].(*bytes.Buffer)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

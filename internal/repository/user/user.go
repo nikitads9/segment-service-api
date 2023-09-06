@@ -25,7 +25,7 @@ type Repository interface {
 	AddUser(ctx context.Context, userName string) (int64, error)
 	GetUser(ctx context.Context, userId int64) (string, error)
 	RemoveUser(ctx context.Context, userId int64) error
-	GetUserHistoryCsv(ctx context.Context, userId int64) (bytes.Buffer, error)
+	GetUserHistoryCsv(ctx context.Context, userId int64) (*bytes.Buffer, error)
 }
 
 type repository struct {

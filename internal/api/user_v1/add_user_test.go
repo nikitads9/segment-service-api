@@ -31,25 +31,24 @@ func Test_AddUser(t *testing.T) {
 		}
 	)
 	userRepoMock := userRepoMocks.NewMockRepository(mock)
+	api := NewMockImplementation(Implementation{
+		userService: user.NewMockUserService(userRepoMock)})
 
 	gomock.InOrder(
 		userRepoMock.EXPECT().AddUser(ctx, userName).Return(userId, nil).Times(1),
 		userRepoMock.EXPECT().AddUser(ctx, userName).Return(int64(0), userErr).Times(1),
 	)
 
-	api := NewMockImplementation(Implementation{
-		userService: user.NewMockUserService(userRepoMock)})
-
 	t.Run("success case", func(t *testing.T) {
 		res, err := api.AddUser(ctx, validRequest)
 		require.Nil(t, err)
-		require.Equal(t, res.GetId(), validResponse.GetId())
+		require.Equal(t, validResponse.GetId(), res.GetId())
 	})
 
 	t.Run("error case", func(t *testing.T) {
 		_, err := api.AddUser(ctx, validRequest)
 		require.Error(t, err)
-		require.Equal(t, err, userErr)
+		require.Equal(t, userErr, err)
 	})
 
 }

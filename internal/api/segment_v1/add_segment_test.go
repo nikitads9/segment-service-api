@@ -31,24 +31,24 @@ func Test_AddSegment(t *testing.T) {
 		}
 	)
 	segmentRepoMock := segmentRepoMocks.NewMockRepository(mock)
+	api := newMockImplementation(Implementation{
+		segmentService: segment.NewMockSegmentService(segmentRepoMock),
+	})
+
 	gomock.InOrder(
 		segmentRepoMock.EXPECT().AddSegment(ctx, slug).Return(segmentId, nil).Times(1),
 		segmentRepoMock.EXPECT().AddSegment(ctx, slug).Return(int64(0), segmentErr).Times(1),
 	)
 
-	api := newMockImplementation(Implementation{
-		segmentService: segment.NewMockSegmentService(segmentRepoMock),
-	})
-
 	t.Run("success case", func(t *testing.T) {
 		res, err := api.AddSegment(ctx, validRequest)
 		require.Nil(t, err)
-		require.Equal(t, res.GetId(), validResponse.GetId())
+		require.Equal(t, validResponse.GetId(), res.GetId())
 	})
 
 	t.Run("error case", func(t *testing.T) {
 		_, err := api.AddSegment(ctx, validRequest)
 		require.Error(t, err)
-		require.Equal(t, err, segmentErr)
+		require.Equal(t, segmentErr, err)
 	})
 }

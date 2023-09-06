@@ -469,32 +469,44 @@ func (m *SetExpireTimeRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if all {
-		switch v := interface{}(m.GetExpirationTime()).(type) {
-		case interface{ ValidateAll() error }:
-			if err := v.ValidateAll(); err != nil {
-				errors = append(errors, SetExpireTimeRequestValidationError{
-					field:  "ExpirationTime",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
-		case interface{ Validate() error }:
-			if err := v.Validate(); err != nil {
-				errors = append(errors, SetExpireTimeRequestValidationError{
-					field:  "ExpirationTime",
-					reason: "embedded message failed validation",
-					cause:  err,
-				})
-			}
+	if m.GetExpirationTime() == nil {
+		err := SetExpireTimeRequestValidationError{
+			field:  "ExpirationTime",
+			reason: "value is required",
 		}
-	} else if v, ok := interface{}(m.GetExpirationTime()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return SetExpireTimeRequestValidationError{
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if t := m.GetExpirationTime(); t != nil {
+		ts, err := t.AsTime(), t.CheckValid()
+		if err != nil {
+			err = SetExpireTimeRequestValidationError{
 				field:  "ExpirationTime",
-				reason: "embedded message failed validation",
+				reason: "value is not a valid timestamp",
 				cause:  err,
 			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		} else {
+
+			now := time.Now()
+
+			if ts.Sub(now) <= 0 {
+				err := SetExpireTimeRequestValidationError{
+					field:  "ExpirationTime",
+					reason: "value must be greater than now",
+				}
+				if !all {
+					return err
+				}
+				errors = append(errors, err)
+			}
+
 		}
 	}
 

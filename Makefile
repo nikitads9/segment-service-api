@@ -82,3 +82,12 @@ install-go-deps: .install-go-deps
 			go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 			go mod tidy
 			go mod vendor
+
+.PHONY: coverage
+coverage:
+	go test -race -coverprofile="coverage.out" -covermode=atomic ./...
+	go tool cover -html="coverage.out"
+
+PHONY: test-coverage
+test-coverage:
+	go test ./... -coverprofile=coverage.out && go tool cover -html=coverage.out
