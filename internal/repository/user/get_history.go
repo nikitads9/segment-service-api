@@ -37,7 +37,10 @@ func (r *repository) GetUserHistoryCsv(ctx context.Context, userId int64) (*byte
 
 	writer := csv.NewWriter(&buffer)
 	for _, elem := range dest {
-		writer.Write(elem.ToStringArray())
+		err = writer.Write(elem.ToStringArray())
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	writer.Flush()

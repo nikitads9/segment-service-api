@@ -21,7 +21,6 @@ type App struct {
 	serviceProvider *serviceProvider
 	pathConfig      string
 	grpcServer      *grpc.Server
-	httpServer      *http.Server
 	mux             *runtime.ServeMux
 }
 

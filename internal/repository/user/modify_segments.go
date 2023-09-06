@@ -83,7 +83,10 @@ func (r *repository) CheckForDuplicates(ctx context.Context, segmentId int64, us
 	}
 
 	row.Next()
-	row.Scan(&isActive)
+	err = row.Scan(&isActive)
+	if err != nil {
+		return int64(0), err
+	}
 
 	return isActive, nil
 }
